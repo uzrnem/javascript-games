@@ -1,0 +1,154 @@
+<html>
+    <style>
+:root {
+  --main-bg-color: #bfc8b2;
+  --deem-color: #9da591;
+  --dark-color: #000000;
+  --pixel-size: 0.6em;
+  --pixel-border-size: 0.2em;
+}
+div {
+    float: left;
+}
+span {
+    border: var(--pixel-border-size) solid var(--main-bg-color);
+    outline: var(--pixel-border-size) solid var(--deem-color);
+    background-color: var(--deem-color);
+    content: " ";
+    display: block;
+    width: var(--pixel-size);
+    height: var(--pixel-size);
+    margin: 0.15em;
+}
+.active {
+    outline-color: var(--dark-color);
+    background-color: var(--dark-color);
+}
+table {
+    background-color: var(--main-bg-color);
+    border: .1em solid;
+}
+</style>
+    <body>
+        <div id="tablecontainer">
+        </div>
+        <div>
+            <table style="padding: 1em;">
+                <tr>
+                    <td><h1>Sample Game</h1></td>
+                </tr>
+                <tr>
+                    <td>Score: <text id="score"><b>0</b></text></td>
+                </tr>
+                <tr>
+                    <td>Level: <text id="level"><b>0</b></text></td>
+                </tr>
+                <tr>
+                    <td>Message: <b><text id="message"></text></b></td>
+                </tr>
+                <tr>
+                    <td>Restart: <button onclick="init()">Restart</button> </td>
+                </tr>
+                <tr id="pause">
+                    <td>Pause: <button onclick="pause()">Pause</button> <b>[space]</b> </td>
+                </tr>
+                <tr id="resume" style="display: none;">
+                    <td>Resume: <button onclick="resume()">Resume</button> <b>[space]</b> </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+<script>
+const containerDiv = document.getElementById("tablecontainer");
+const table = document.createElement("table");
+for (var yc = 0; yc < 20; yc++) {
+    const tr = document.createElement("tr");
+    for (var xc = 0; xc < 10; xc++) {
+        const td = document.createElement("td");
+        const span = document.createElement("span");
+        span.id = `pixel_${xc}_${yc}`
+        td.appendChild(span);
+        tr.appendChild(td);
+    }
+    table.appendChild(tr);
+}
+containerDiv.appendChild(table);
+
+var score = 0;
+var level = 1;
+var timer = null;
+var status = null;
+function move() {
+}
+
+function init() {
+    speed = 300;
+    level = 0;
+    score = 0;
+    status = "start";
+    document.getElementById("level").innerText = level;
+    document.getElementById("score").innerText = score;
+    document.getElementById("message").innerText = "Game Started..!";
+    if (timer == null) {
+        ///timer = setInterval(move, speed);
+    }
+
+}
+
+function pause() {
+    if (status == "start") {
+        status = "pause";
+        clearInterval(timer);
+        timer = null;
+        document.getElementById("message").innerText = "Game Paused..!";
+        document.getElementById("pause").style = "display: none;";
+        document.getElementById("resume").style = "";
+    }
+}
+
+function resume() {
+    if (status == "pause") {
+        status = "start";
+        timer = setInterval(move, speed);
+        document.getElementById("message").innerText = "Game Resumed..!";
+        document.getElementById("pause").style = "";
+        document.getElementById("resume").style = "display: none;";
+    }
+}
+
+
+function moveUp() {
+}
+
+function moveLeft() {
+}
+
+function moveRight() {
+}
+
+function moveDown() {
+}
+
+document.addEventListener('keyup', (e) => {
+    if (e.code == 'Space') {
+        if (status == "start") {
+            pause();
+        } else if (status == "pause") {
+            resume();
+        }
+    }
+    if ((e.code == 'ArrowUp' || e.code == 'KeyW')) {
+        moveUp();
+    } else if ((e.code == 'ArrowLeft' || e.code == 'KeyA')) {
+        moveLeft();
+    } else if ((e.code == 'ArrowRight' || e.code == 'KeyD')) {
+        moveRight();
+    } else if ((e.code == 'ArrowDown' || e.code == 'KeyS')) {
+        moveDown();
+    }
+});
+
+init();
+
+</script>
+</html>
