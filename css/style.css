@@ -1,0 +1,28 @@
+:root {
+--main-bg-color: #bfc8b2;
+--deem-color: #9da591;
+--dark-color: #000000;
+--pixel-size: 0.6em;
+--pixel-border-size: 0.2em;
+}
+div {
+    float: left;
+}
+span {
+    border: var(--pixel-border-size) solid var(--main-bg-color);
+    outline: var(--pixel-border-size) solid var(--deem-color);
+    background-color: var(--deem-color);
+    content: " ";
+    display: block;
+    width: var(--pixel-size);
+    height: var(--pixel-size);
+    margin: 0.15em;
+}
+.active {
+    outline-color: var(--dark-color);
+    background-color: var(--dark-color);
+}
+table {
+    background-color: var(--main-bg-color);
+    border: .1em solid;
+}

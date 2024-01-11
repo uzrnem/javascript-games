@@ -1,0 +1,241 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/script.js"></script>
+</head>
+<body>
+    <div id="gamepanel"></div>
+</body>
+<script>
+
+setupGamePanel("Racing");
+
+var speed = null;
+var score = 0;
+var level = 1;
+var timer = null;
+var status = null;
+var roadWallPosition = 0;
+var myCarLane = 0;
+var longDownTimer = null;
+var carDesign = [
+    [1, 0],
+    [0, 1], [1, 1], [2, 1],
+    [1, 2],
+    [0, 3], [2, 3],
+];
+var speeders = null;
+var otherCars = null;
+document.getElementById("restartbtn").onclick = init;
+document.getElementById("pausebtn").onclick = pause;
+document.getElementById("resumebtn").onclick = resume;
+
+
+function turnMyCar(carLane) {
+    for (c = 0 ; c < carDesign.length; c++) {
+        var carPixel = carDesign[c]
+        offPixel(2+carLane*3 + carPixel[0], 16 + carPixel[1]);
+    }
+    carLane = (carLane + 1) %2;
+    for (c = 0 ; c < carDesign.length; c++) {
+        var carPixel = carDesign[c]
+        onPixel(2+carLane*3 + carPixel[0], 16 + carPixel[1]);
+    }
+    for (const otherCar of otherCars) {
+        if (isGameOver(otherCar, carLane)) {
+            return;
+        }
+    }
+    return carLane;
+}
+
+function displayCar(x, y) {
+    for (c = 0 ; c < carDesign.length; c++) {
+        var carPixel = carDesign[c];
+        if ((y - 1 + carPixel[1]) >= 0 && (y - 1 + carPixel[1]) < 20) {
+            offPixel(2+x*3 + carPixel[0], y - 1 + carPixel[1]);
+        }
+    }
+    for (c = 0 ; c < carDesign.length; c++) {
+        var carPixel = carDesign[c];
+        if ((y + carPixel[1]) >= 0 && (y + carPixel[1]) < 20) {
+            onPixel(2+x*3 + carPixel[0], y + carPixel[1]);
+        }
+    }
+}
+
+function isGameOver(firstCar, secondCarLane) {
+    if (firstCar.y > 12 && firstCar.y < 20 && firstCar.x == secondCarLane) {
+        document.getElementById("message").innerText = "Game Over..!";
+        document.getElementById("gameover").play();
+        status = "stop";
+        clearInterval(timer);
+        timer = null;
+        return true;
+    }
+    return false;
+}
+
+function init() {
+    speed = 150;
+    speeders = [40, 30, 20, 10, 10, 5];
+    level = 1;
+    score = 0;
+    status = "start";
+    roadWallPosition = 0;
+    for (var xc = 0; xc < 10; xc++) {
+        for (var yc = 0; yc < 20; yc++) {
+            if ((xc == 0 || xc == 9) && yc%5 > -1 && yc%5 < 3) {
+                onPixel(xc, yc);
+            } else {
+                offPixel(xc, yc);
+            }
+        }
+    }
+    otherCars = [
+        {x: 1, y: -5}
+    ]
+    myCarLane = turnMyCar(1);
+    document.getElementById("level").innerText = level;
+    document.getElementById("score").innerText = score;
+    document.getElementById("message").innerText = "Game Started..!";
+    document.getElementById("pause").style = "";
+    document.getElementById("resume").style = "display: none;";
+    if (timer == null) {
+        timer = setInterval(moveUp, speed);
+    }
+    if (longDownTimer != null) {
+        clearInterval(longDownTimer);
+        longDownTimer = null;
+    }
+}
+
+
+function moveUp() {
+    for (c = 0 ; c < 5; c++) {
+        offPixel(0, (c*5 + roadWallPosition)%20);
+        offPixel(9, (c*5 + roadWallPosition)%20);
+        onPixel(0, (c*5 + roadWallPosition + 3)%20);
+        onPixel(9, (c*5 + roadWallPosition + 3)%20);
+    }
+    var addFirstCar = false;
+    var removeFirstCar = false;
+    for (const otherCar of otherCars) {
+        otherCar.y ++;
+        displayCar(otherCar.x, otherCar.y);
+        if (isGameOver(otherCar, myCarLane)) {
+            return;
+        }
+        if (otherCar.y >= 20) {
+            removeFirstCar = true;
+            score++;
+            if (score % 5 == 0 && speeders.length > 0) {
+                level++;
+                document.getElementById("level").innerText = level;
+                speed = speed - speeders.shift();
+                clearInterval(timer);
+                timer = setInterval(moveUp, speed);
+            } 
+            document.getElementById("score").innerText = score;
+        }
+        if (otherCar.y == 10) {
+            addFirstCar = true;
+        }
+    }
+    if (removeFirstCar) {
+        otherCars.shift();
+    }
+    if (addFirstCar) {
+        otherCars.push({x: Math.round(Math.random()), y: -5});
+    }
+    roadWallPosition ++;
+}
+
+function moveLeft() {
+    if (status == "start") {
+        if (myCarLane == 1) {
+            myCarLane = turnMyCar(1);
+            if (status == "start") {
+                document.getElementById("move").play();
+            }
+        } else {
+            document.getElementById("wrong").play();
+        }
+    }
+}
+
+function moveRight() {
+    if (status == "start") {
+        if (myCarLane == 0) {
+            myCarLane = turnMyCar(0);
+            if (status == "start") {
+                document.getElementById("move").play();
+            }
+        } else {
+            document.getElementById("wrong").play();
+        }
+    }
+}
+
+function moveDown() {}
+
+function pause() {
+    if (status == "start") {
+        status = "pause";
+        clearInterval(timer);
+        timer = null;
+        document.getElementById("message").innerText = "Game Paused..!";
+        document.getElementById("pause").style = "display: none;";
+        document.getElementById("resume").style = "";
+        document.getElementById("point").play();
+    }
+}
+
+function resume() {
+    if (status == "pause") {
+        status = "start";
+        timer = setInterval(moveUp, speed);
+        document.getElementById("message").innerText = "Game Resumed..!";
+        document.getElementById("pause").style = "";
+        document.getElementById("resume").style = "display: none;";
+        document.getElementById("point").play();
+    }
+}
+
+setupKeyUpListener(
+    init, // ReloadKey
+    () => {
+        if (status == "start") {
+            pause();
+        } else if (status == "pause") {
+            resume();
+        }
+    }, // SpaceKey
+    () => {
+        if (longDownTimer != null) {
+            clearInterval(longDownTimer);
+            longDownTimer = null;
+        }
+    }, // UpKey
+    moveDown,
+    moveLeft,
+    moveRight
+)
+
+document.addEventListener('keydown', (e) => {
+    if ((e.code == 'ArrowUp' || e.code == 'KeyW')) {
+        if (longDownTimer == null) {
+            longDownTimer = setInterval(() => {
+                moveUp();
+                document.getElementById("speedup").play();
+            }, speed / 4);
+        }
+    }
+});
+
+init();
+
+</script>
+</html>

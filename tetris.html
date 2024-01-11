@@ -1,91 +1,46 @@
 <html>
-    <style>
-:root {
-  --main-bg-color: #bfc8b2;
-  --deem-color: #9da591;
-  --dark-color: #000000;
-  --pixel-size: 0.6em;
-  --pixel-border-size: 0.2em;
-}
-div {
-    float: left;
-}
-span {
-    border: var(--pixel-border-size) solid var(--main-bg-color);
-    outline: var(--pixel-border-size) solid var(--deem-color);
-    background-color: var(--deem-color);
-    content: " ";
-    display: block;
-    width: var(--pixel-size);
-    height: var(--pixel-size);
-    margin: 0.15em;
-}
-.active {
-    outline-color: var(--dark-color);
-    background-color: var(--dark-color);
-}
-table {
-    background-color: var(--main-bg-color);
-    border: .1em solid;
-}
-</style>
-    <body>
-        <div id="tablecontainer">
-        </div>
-        <div>
-            <table style="padding: 1em;">
-                <tr>
-                    <td><h1>Tetris Game</h1></td>
-                </tr>
-                <tr>
-                    <td>Score: <text id="score"><b>0</b></text></td>
-                </tr>
-                <tr>
-                    <td>Level: <text id="level"><b>0</b></text></td>
-                </tr>
-                <tr>
-                    <td>Message: <b><text id="message"></text></b></td>
-                </tr>
-                <tr>
-                    <td>Restart: <button onclick="init()">Restart</button> </td>
-                </tr>
-                <tr id="pause">
-                    <td>Pause: <button onclick="pause()">Pause</button> <b>[space]</b> </td>
-                </tr>
-                <tr id="resume" style="display: none;">
-                    <td>Resume: <button onclick="resume()">Resume</button> <b>[space]</b> </td>
-                </tr>
-            </table>
-        </div>
-    </body>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/script.js"></script>
+</head>
+<body>
+    <div id="gamepanel"></div>
+</body>
 <script>
-const containerDiv = document.getElementById("tablecontainer");
-const table = document.createElement("table");
-for (var yc = 0; yc < 20; yc++) {
-    const tr = document.createElement("tr");
-    for (var xc = 0; xc < 10; xc++) {
-        const td = document.createElement("td");
-        const span = document.createElement("span");
-        span.id = `pixel_${xc}_${yc}`
-        td.appendChild(span);
-        tr.appendChild(td);
-    }
-    table.appendChild(tr);
-}
-containerDiv.appendChild(table);
-    
+
+setupGamePanel("Tetris");
 
 var speed = null;
 var score = 0;
 var level = 1;
 var timer = null;
+var longDownTimer = null;
 var status = null;
 var object = null;
 var screen = null;
+var itemBoxs = [];
+var matrix = [
+    [[3, 0], [3, 1], [3, 2], [3, 3]],
+    [[2, 0], [2, 1], [2, 2], [2, 3]],
+    [[1, 0], [1, 1], [1, 2], [1, 3]],
+    [[0, 0], [0, 1], [0, 2], [0, 3]]
+];
+var speeders = null;
+
+document.getElementById("restartbtn").onclick = init;
+document.getElementById("pausebtn").onclick = pause;
+document.getElementById("resumebtn").onclick = resume;
 
 function getObject() {
-    var count = Math.floor(Math.random() * 21);
-    switch (count % 7) {
+    if (itemBoxs.length == 0) {
+        for (var i = 0; i < 21; i++) {
+            itemBoxs.push(i % 7);
+        }
+        itemBoxs.sort(() => Math.random() - 0.5 );
+    }
+    switch (itemBoxs.shift()) {
     case 0: return {x:3, y:0, cordinates:[{x:4, y:0}, {x:4, y:1}, {x:4, y:2}, {x:4, y:3}]}; //  |
     case 1: return {x:3, y:-1, cordinates:[{x:4, y:1}, {x:5, y:1}, {x:4, y:0}, {x:5, y:0}]}; // ::
     case 2: return {x:4, y:-1, cordinates:[{x:5, y:2}, {x:5, y:1}, {x:5, y:0}, {x:6, y:1}]}; // .:.
@@ -94,31 +49,75 @@ function getObject() {
     case 5: return {x:3, y:-1, cordinates:[{x:3, y:0}, {x:4, y:1}, {x:4, y:0}, {x:5, y:1}]}; // ':.
     case 6: return {x:4, y:-1, cordinates:[{x:4, y:1}, {x:5, y:1}, {x:5, y:2}, {x:4, y:0}]}; // .:'
     }
-    /*
-    switch (count % 7) { // return object type and angle store more information
-    case 0: return [{x:4, y:0}, {x:4, y:1}, {x:4, y:2}, {x:4, y:3}]; //  |
-    //case 0: return [{x:3, y:1}, {x:4, y:1}, {x:5, y:1}, {x:6, y:1}]; //  |
+}
 
-    case 1: return [{x:4, y:1}, {x:5, y:1}, {x:4, y:0}, {x:5, y:0}]; // ::
-
-    case 2: return [{x:4, y:1}, {x:5, y:1}, {x:5, y:0}, {x:6, y:1}]; // .:.
-    //case 2: return [{x:5, y:2}, {x:5, y:1}, {x:5, y:0}, {x:6, y:1}]; // .:.
-    //case 2: return [{x:4, y:1}, {x:5, y:1}, {x:5, y:2}, {x:6, y:1}]; // .:.
-    //case 2: return [{x:4, y:1}, {x:5, y:1}, {x:5, y:0}, {x:5, y:2}]; // .:.
-
-    case 3: return [{x:3, y:1}, {x:3, y:0}, {x:4, y:0}, {x:5, y:0}]; // ..:
-    //case 3: return [{x:4, y:1}, {x:3, y:0}, {x:4, y:0}, {x:4, y:2}]; // ..:
-
-    case 4: return [{x:4, y:0}, {x:5, y:0}, {x:6, y:1}, {x:6, y:0}]; // :..
-    //case 4: return [{x:5, y:2}, {x:5, y:0}, {x:5, y:1}, {x:6, y:0}]; // :..
-
-    case 5: return [{x:3, y:0}, {x:4, y:1}, {x:4, y:0}, {x:5, y:1}]; // ':.
-    //case 5: return [{x:5, y:0}, {x:4, y:1}, {x:4, y:2}, {x:5, y:1}]; // ':.
-
-    //case 6: return [{x:4, y:1}, {x:5, y:1}, {x:5, y:0}, {x:6, y:0}]; // .:'
-    case 6: return [{x:4, y:1}, {x:5, y:1}, {x:5, y:2}, {x:4, y:0}]; // .:'
+function refreshFullDisplay(object, screen) {
+    for (var yc = 0; yc < 20; yc++) {
+        for (var xc = 0; xc < 10; xc++) {
+            if (screen[`y_${yc}`][`x_${xc}`] == 1) {
+                document.getElementById(`pixel_${xc}_${yc}`).className = "active";
+            } else {
+                document.getElementById(`pixel_${xc}_${yc}`).className = "";
+            }
+        }
     }
-    */
+    printObjectOnScreen(object);
+}
+
+function areLinesCreated(screen) {
+    for (var yc = 0; yc < 20; yc++) {
+        var lineCount = 0;
+        for (var xc = 0; xc < 10; xc++) {
+            if (screen[`y_${yc}`][`x_${xc}`] == 1) {
+                lineCount = lineCount + 1;
+            }
+        }
+        if (lineCount == 10) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function removeCompletedLines() {
+    arr = [];
+    var lineCount = 0;
+    for (var yc = 20 - 1; yc >= 0; yc--) {
+        var pixelCount = 0;
+        for (var xc = 0; xc < 10; xc++) {
+            if (screen[`y_${yc}`][`x_${xc}`] == 1) {
+                pixelCount = pixelCount + 1;
+            }
+        }
+        if (pixelCount == 10) {
+            lineCount++;
+        } else {
+            arr.push(screen[`y_${yc}`]);
+        }
+    }
+    if (lineCount > 0) {
+        var oldScore = score;
+        while (lineCount > 0) {
+            score += lineCount--;
+        }
+        document.getElementById("score").innerText = score;
+        if (score % 5 == 0 && speeders.length > 0) {
+            level++;
+            document.getElementById("level").innerText = level;
+            speed = speed - speeders.shift();
+            clearInterval(timer);
+            timer = setInterval(moveUp, speed);
+        }
+        document.getElementById("speedup").play();
+    }
+    for (var yc = 20 - 1; yc >= 0; yc--) {
+        if (arr.length > 0) {
+            screen[`y_${yc}`] = arr.shift();
+        } else {
+            screen[`y_${yc}`] = {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0};
+        }
+    }
+    refreshFullDisplay(object, screen);
 }
 
 function addObjectToScreen(object, screen) {
@@ -128,80 +127,43 @@ function addObjectToScreen(object, screen) {
     }
 }
 
-function displayObjectWithScreen(object, screen) {
-    var isListCreated = false
-    for (var yc = 0; yc < 20; yc++) {
-        var lineCount = 0;
-        for (var xc = 0; xc < 10; xc++) {
-            if (screen[`y_${yc}`][`x_${xc}`] == 1) {
-                lineCount = lineCount + 1;
-                document.getElementById(`pixel_${xc}_${yc}`).className = "active";
-            } else {
-                document.getElementById(`pixel_${xc}_${yc}`).className = "";
-            }
-        }
-        if (lineCount == 10) {
-            isListCreated = true;
-        }
-    }
-
+function printObjectOnScreen(object) {
     if (object != null) {
         for (var c = 0; c < object.cordinates.length; c++) {
             var obj = object.cordinates[c];
             document.getElementById(`pixel_${obj.x}_${obj.y}`).className = "active";
         }
     }
-    return isListCreated;
 }
 
-function removeCompletedLines() {
-    arr = [];
-    for (var yc = 20 - 1; yc >= 0; yc--) {
-        var lineCount = 0;
-        for (var xc = 0; xc < 10; xc++) {
-            if (screen[`y_${yc}`][`x_${xc}`] == 1) {
-                lineCount = lineCount + 1;
-            }
-        }
-        if (lineCount == 10) {
-            score++;
-            document.getElementById("score").innerText = score;
-        } else {
-            arr.push(screen[`y_${yc}`]);
+function removeObjectFromScreen(object) {
+    if (object != null) {
+        for (var c = 0; c < object.cordinates.length; c++) {
+            var obj = object.cordinates[c];
+            document.getElementById(`pixel_${obj.x}_${obj.y}`).className = "";
         }
     }
-    for (var yc = 20 - 1; yc >= 0; yc--) {
-        if (arr.length > 0) {
-            screen[`y_${yc}`] = arr.shift();
-        } else {
-            screen[`y_${yc}`] = {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0};
-        }
-    }
-    displayObjectWithScreen(object, screen);
 }
 
 function move() {
     if (object == null) {
         object = getObject();
+        printObjectOnScreen(object);
         for (var c = 0; c < object.cordinates.length; c++) {
             var obj = object.cordinates[c];
-            if (screen[`y_${object.cordinates[c].y + 1}`][`x_${object.cordinates[c].x}`] == 1 ||
-                screen[`y_${object.cordinates[c].y}`][`x_${object.cordinates[c].x}`] == 1
-            ) {
-                displayObjectWithScreen(object, screen)
+            if (screen[`y_${object.cordinates[c].y}`][`x_${object.cordinates[c].x}`] == 1) {
                 document.getElementById("message").innerText = "Game Over..!";
                 status = "stop";
                 clearInterval(timer);
                 object = null;
                 timer = null;
-                return;
+                return; //Game Over
             }
         }
     } else {
         moveDown();
     }
-    var isListCreated = displayObjectWithScreen(object, screen);
-    if (isListCreated) {
+    if (areLinesCreated(screen)) {
         setTimeout(removeCompletedLines, speed / 3);
     }
 }
@@ -211,19 +173,19 @@ function moveDown() {
         return;
     }
     for (var c = 0; c < object.cordinates.length; c++) {
-        var obj = object.cordinates[c];
-        if (obj.y == 19 || screen[`y_${object.cordinates[c].y + 1}`][`x_${object.cordinates[c].x}`] == 1) {
+        if (object.cordinates[c].y == 19 || screen[`y_${object.cordinates[c].y + 1}`][`x_${object.cordinates[c].x}`] == 1) {
             addObjectToScreen(object, screen);
+            document.getElementById("move").play();
             object = null;
             return;
         }
     }
+    removeObjectFromScreen(object);
     object.y = object.y + 1;
     for (var c = 0; c < object.cordinates.length; c++) {
-        var obj = object.cordinates[c];
         object.cordinates[c].y = object.cordinates[c].y + 1;
     }
-    displayObjectWithScreen(object, screen);
+    printObjectOnScreen(object);
 }
 
 
@@ -236,12 +198,12 @@ function moveLeft() {
             return;
         }
     }
+    removeObjectFromScreen(object);
     object.x = object.x - 1;
     for (var c = 0; c < object.cordinates.length; c++) {
-        var obj = object.cordinates[c];
         object.cordinates[c].x = object.cordinates[c].x - 1;
     }
-    displayObjectWithScreen(object, screen);
+    printObjectOnScreen(object);
 }
 
 function moveRight() {
@@ -254,15 +216,15 @@ function moveRight() {
             return;
         }
     }
+    removeObjectFromScreen(object);
     object.x = object.x + 1;
     for (var c = 0; c < object.cordinates.length; c++) {
-        var obj = object.cordinates[c];
         object.cordinates[c].x = object.cordinates[c].x + 1;
     }
-    displayObjectWithScreen(object, screen);
+    printObjectOnScreen(object);
 }
 
-function changeObject() {
+function rotateObject() {
     if (object == null) {
         return;
     }
@@ -272,28 +234,25 @@ function changeObject() {
 
         var [x, y] = rotateCordinates(obj.x - object.x, obj.y - object.y)
         var item = {x: x + object.x, y: y + object.y}
-        if (item.x < 0 || item.x > 9 || screen[`y_${object.cordinates[xc].y}`][`x_${object.cordinates[xc].x }`] == 1 ||
+        if (item.x < 0 || item.x > 9 || screen[`y_${item.y}`][`x_${item.x}`] == 1 ||
             item.y < 0 || item.y > 19) {
             return;
         }
         newList.push(item);
     }
+    removeObjectFromScreen(object);
+    document.getElementById("rotate").play();
     object = {x: object.x, y: object.y, cordinates: newList}
-    displayObjectWithScreen(object, screen);
+    printObjectOnScreen(object);
 }
 
 function rotateCordinates(x, y) {
-    var matrix = [
-        [[3, 0], [3, 1], [3, 2], [3, 3]],
-        [[2, 0], [2, 1], [2, 2], [2, 3]],
-        [[1, 0], [1, 1], [1, 2], [1, 3]],
-        [[0, 0], [0, 1], [0, 2], [0, 3]]
-    ]
     return matrix[y][x]
 }
 
 function init() {
     speed = 400;
+    speeders = [100, 75, 50, 25, 15, 10];
     level = 0;
     score = 0;
     status = "start";
@@ -323,8 +282,15 @@ function init() {
     document.getElementById("level").innerText = level;
     document.getElementById("score").innerText = score;
     document.getElementById("message").innerText = "Game Started..!";
+    document.getElementById("pause").style = "";
+    document.getElementById("resume").style = "display: none;";
+    refreshFullDisplay(object, screen);
     if (timer == null) {
         timer = setInterval(move, speed);
+    }
+    if (longDownTimer != null) {
+        clearInterval(longDownTimer);
+        longDownTimer = null;
     }
 }
 
@@ -336,6 +302,7 @@ function pause() {
         document.getElementById("message").innerText = "Game Paused..!";
         document.getElementById("pause").style = "display: none;";
         document.getElementById("resume").style = "";
+        document.getElementById("point").play();
     }
 }
 
@@ -346,30 +313,39 @@ function resume() {
         document.getElementById("message").innerText = "Game Resumed..!";
         document.getElementById("pause").style = "";
         document.getElementById("resume").style = "display: none;";
+        document.getElementById("point").play();
     }
 }
 
-document.addEventListener('keyup', (e) => {
-    if (e.code == 'Space') {
+setupKeyUpListener(
+    init, // ReloadKey
+    () => {
         if (status == "start") {
             pause();
         } else if (status == "pause") {
             resume();
         }
-    }
-    if ((e.code == 'ArrowUp' || e.code == 'KeyW')) {
-        changeObject();
-    } else if ((e.code == 'ArrowLeft' || e.code == 'KeyA')) {
-        moveLeft();
-    } else if ((e.code == 'ArrowRight' || e.code == 'KeyD')) {
-        moveRight();
-    } else if ((e.code == 'ArrowDown' || e.code == 'KeyS')) {
-        moveDown();
+    }, // SpaceKey
+    rotateObject, // UpKey
+    () => {
+        if (longDownTimer != null) {
+            clearInterval(longDownTimer);
+            longDownTimer = null;
+        }
+    }, // DownKey
+    moveLeft,
+    moveRight
+)
+
+document.addEventListener('keydown', (e) => {
+    if ((e.code == 'ArrowDown' || e.code == 'KeyS')) {
+        if (longDownTimer == null) {
+            longDownTimer = setInterval(moveDown, speed / 4);
+        }
     }
 });
 
 init();
-move();
 
 </script>
 </html>

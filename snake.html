@@ -1,105 +1,49 @@
 <html>
-    <style>
-:root {
-  --main-bg-color: #bfc8b2;
-  --deem-color: #9da591;
-  --dark-color: #000000;
-  --pixel-size: 0.6em;
-  --pixel-border-size: 0.2em;
-}
-div {
-    float: left;
-}
-span {
-    border: var(--pixel-border-size) solid var(--main-bg-color);
-    outline: var(--pixel-border-size) solid var(--deem-color);
-    background-color: var(--deem-color);
-    content: " ";
-    display: block;
-    width: var(--pixel-size);
-    height: var(--pixel-size);
-    margin: 0.15em;
-}
-.active {
-    outline-color: var(--dark-color);
-    background-color: var(--dark-color);
-}
-table {
-    background-color: var(--main-bg-color);
-    border: .1em solid;
-}
-</style>
-    <body>
-        <div id="tablecontainer">
-        </div>
-        <div>
-            <table style="padding: 1em;">
-                <tr>
-                    <td><h1>Snake Game</h1></td>
-                </tr>
-                <tr>
-                    <td>Score: <text id="score"><b>0</b></text></td>
-                </tr>
-                <tr>
-                    <td>Level: <text id="level"><b>0</b></text></td>
-                </tr>
-                <tr>
-                    <td>Message: <b><text id="message"></text></b></td>
-                </tr>
-                <tr>
-                    <td>Restart: <button onclick="init()">Restart</button> </td>
-                </tr>
-                <tr id="pause">
-                    <td>Pause: <button onclick="pause()">Pause</button> <b>[space]</b> </td>
-                </tr>
-                <tr id="resume" style="display: none;">
-                    <td>Resume: <button onclick="resume()">Resume</button> <b>[space]</b> </td>
-                </tr>
-            </table>
-        </div>
-    </body>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/script.js"></script>
+</head>
+<body>
+    <div id="gamepanel"></div>
+</body>
 <script>
-const containerDiv = document.getElementById("tablecontainer");
-const table = document.createElement("table");
-for (var yc = 0; yc < 20; yc++) {
-    const tr = document.createElement("tr");
-    for (var xc = 0; xc < 10; xc++) {
-        const td = document.createElement("td");
-        const span = document.createElement("span");
-        span.id = `pixel_${xc}_${yc}`
-        td.appendChild(span);
-        tr.appendChild(td);
-    }
-    table.appendChild(tr);
-}
-containerDiv.appendChild(table);
 
-function isAlreadyThere(x, y, availableList) {
-    for (var i = 0; i < availableList.length -1; i++) {
-        if (availableList[i].x == x && availableList[i].y == y) {
+setupGamePanel("Snake");
+
+function isTouchedSnakeBody(x, y, snakeBody) {
+    for (var i = 0; i < snakeBody.length -1; i++) {
+        if (snakeBody[i].x == x && snakeBody[i].y == y) {
             return true;
         }
     }
     return false;
 }
 
-function generateNewFood(food, availableList) {
-    x = Math.floor(Math.random() * 9 + 0)
-    y = Math.floor(Math.random() * 19 + 0)
-    for (var xc = 0; xc < 10; xc++) {
-        for (var yc = 0; yc < 20; yc++) {
-            var newX = (x + xc)% 10;
-            var newY = (y + yc)% 20;
-            if (!isAlreadyThere(newX, newY, availableList) && food.x != newX && food.y != newY) {
-                return { x: newX, y: newY }
+function generateNewFood(snakeBody) {
+    if (availableCords == null) {
+        availableCords = [];
+        for (var xc = 0; xc < 10; xc++) {
+            for (var yc = 0; yc < 20; yc++) {
+                availableCords.push({ x: xc, y: yc });
             }
+        }
+        availableCords.sort(() => Math.random() - 0.5 );
+    }
+    while (availableCords.length > 1) {
+        var cord = availableCords.shift();
+        if (!isTouchedSnakeBody(cord.x, cord.y, snakeBody)) {
+            return cord
+        } else {
+            availableCords.push(cord);
         }
     }
     return null;
 }
 
 var speed = null;
-var list = null;
+var snake = null;
 var direction = null;
 var keyCode = null
 var score = 0;
@@ -107,51 +51,47 @@ var level = 1;
 var food = null;
 var timer = null;
 var status = null;
+var availableCords = null;
+var speeders = null;
+
+document.getElementById("restartbtn").onclick = init;
+document.getElementById("pausebtn").onclick = pause;
+document.getElementById("resumebtn").onclick = resume;
 
 function move() {
     direction = keyCode;
-    var oldHead = list[0];
+    var oldHead = snake[0];
     var newHead = {};
     if (direction == "up") {
-        newHead = {
-            x: oldHead.x,
-            y: (oldHead.y - 1 + 20 ) % 20
-        }
+        newHead = { x: oldHead.x, y: (oldHead.y - 1 + 20 ) % 20 }
     } else if (direction == "down") {
-        newHead = {
-            x: oldHead.x,
-            y: (oldHead.y + 1 + 20 ) % 20
-        }
+        newHead = { x: oldHead.x, y: (oldHead.y + 1 + 20 ) % 20 }
     } else if (direction == "left") {
-        newHead = {
-            x: (oldHead.x - 1 + 10 ) % 10,
-            y: oldHead.y
-        }
+        newHead = { x: (oldHead.x - 1 + 10 ) % 10, y: oldHead.y }
     } else if (direction == "right") {
-        newHead = {
-            x: (oldHead.x + 1 + 10 ) % 10,
-            y: oldHead.y
-        }
+        newHead = { x: (oldHead.x + 1 + 10 ) % 10, y: oldHead.y }
     }
-    if (isAlreadyThere(newHead.x, newHead.y, list)) {
+    if (isTouchedSnakeBody(newHead.x, newHead.y, snake)) {
         document.getElementById("message").innerText = "Game Over..!";
         status = "stop";
         clearInterval(timer);
         timer = null;
+        document.getElementById("gameover").play();
         return;
     }
     if (newHead.x == food.x && newHead.y == food.y) {
         score += 1;
-        if (score % 10 == 0) {
-            level += 1;
+        document.getElementById("rotate").play();
+        if (score % 5 == 0 && speeders.length > 0) {
+            level++;
             document.getElementById("level").innerText = level;
-            speed = Math.floor(speed * 0.9);
+            speed = speed - speeders.shift();
             clearInterval(timer);
             timer = setInterval(move, speed);
         }
         document.getElementById("score").innerText = score;
-        food = generateNewFood(food, list);
-        if (food == null) {
+        food = generateNewFood(snake);
+        if (food == null || score >= 194) {
             document.getElementById("message").innerText = "You Won..!";
             status = "stop";
             clearInterval(timer);
@@ -160,29 +100,28 @@ function move() {
         }
         console.debug(food)
     } else {
-        var last = list.pop()
+        var last = snake.pop()
         document.getElementById(`pixel_${last.x}_${last.y}`).className = "";
     }
     console.debug(`pixel_${newHead.x}_${newHead.y}`, newHead);
     document.getElementById(`pixel_${newHead.x}_${newHead.y}`).className = "active";
     document.getElementById(`pixel_${food.x}_${food.y}`).className = "active";
-    list.unshift(newHead);
+    snake.unshift(newHead);
 }
 
 function init() {
-    list = [{
+    snake = [{
         x: 0,
         y: 0
     }];
     speed = 300;
+    speeders = [40, 30, 20, 10, 10, 5];
     direction = "right";
     keyCode = "right";
     status = "start";
     score = 0;
-    food = {
-        x: Math.floor(Math.random() * 9 + 0),
-        y: Math.floor(Math.random() * 19 + 0)
-    };
+    level = 1;
+    food = generateNewFood(snake);
     for (var xc = 0; xc < 10; xc++) {
         for (var yc = 0; yc < 20; yc++) {
             document.getElementById(`pixel_${xc}_${yc}`).className = "";
@@ -193,6 +132,8 @@ function init() {
     document.getElementById("pixel_0_0").className = "active";
     document.getElementById(`pixel_${food.x}_${food.y}`).className = "active";
     document.getElementById("message").innerText = "Game Started..!";
+    document.getElementById("pause").style = "";
+    document.getElementById("resume").style = "display: none;";
     if (timer == null) {
         timer = setInterval(move, speed);
     }
@@ -206,6 +147,7 @@ function pause() {
         document.getElementById("message").innerText = "Game Paused..!";
         document.getElementById("pause").style = "display: none;";
         document.getElementById("resume").style = "";
+        document.getElementById("point").play();
     }
 }
 
@@ -216,27 +158,40 @@ function resume() {
         document.getElementById("message").innerText = "Game Resumed..!";
         document.getElementById("pause").style = "";
         document.getElementById("resume").style = "display: none;";
+        document.getElementById("point").play();
     }
 }
 
-document.addEventListener('keyup', (e) => {
-    if (e.code == 'Space') {
+setupKeyUpListener(
+    init, // ReloadKey
+    () => {
         if (status == "start") {
             pause();
         } else if (status == "pause") {
             resume();
         }
-    }
-    if ((e.code == 'ArrowUp' || e.code == 'KeyW') && direction != "down") {
-        keyCode = "up";
-    } else if ((e.code == 'ArrowDown' || e.code == 'KeyS') && direction != "up") {
-        keyCode = "down";
-    } else if ((e.code == 'ArrowLeft' || e.code == 'KeyA') && direction != "right") {
-        keyCode = "left";
-    } else if ((e.code == 'ArrowRight' || e.code == 'KeyD') && direction != "left") {
-        keyCode = "right";
-    }
-});
+    }, // SpaceKey
+    () => {
+        if (direction != "down") {
+            keyCode = "up";
+        }
+    }, // UpKey
+    () => {
+        if (direction != "up") {
+            keyCode = "down";
+        }
+    }, // DownKey
+    () => {
+        if (direction != "right") {
+            keyCode = "left";
+        }
+    }, // LeftKey
+    () => {
+        if (direction != "left") {
+            keyCode = "right";
+        }
+    } // RightKey
+)
 
 init();
 
