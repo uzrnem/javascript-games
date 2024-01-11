@@ -55,9 +55,9 @@ function refreshFullDisplay(object, screen) {
     for (var yc = 0; yc < 20; yc++) {
         for (var xc = 0; xc < 10; xc++) {
             if (screen[`y_${yc}`][`x_${xc}`] == 1) {
-                document.getElementById(`pixel_${xc}_${yc}`).className = "active";
+                onPixel(xc, yc);
             } else {
-                document.getElementById(`pixel_${xc}_${yc}`).className = "";
+                offPixel(xc, yc);
             }
         }
     }
@@ -131,7 +131,7 @@ function printObjectOnScreen(object) {
     if (object != null) {
         for (var c = 0; c < object.cordinates.length; c++) {
             var obj = object.cordinates[c];
-            document.getElementById(`pixel_${obj.x}_${obj.y}`).className = "active";
+            onPixel(obj.x, obj.y);
         }
     }
 }
@@ -140,7 +140,7 @@ function removeObjectFromScreen(object) {
     if (object != null) {
         for (var c = 0; c < object.cordinates.length; c++) {
             var obj = object.cordinates[c];
-            document.getElementById(`pixel_${obj.x}_${obj.y}`).className = "";
+            offPixel(obj.x, obj.y);
         }
     }
 }

@@ -63,9 +63,10 @@ var score = 0;
 var level = 1;
 var timer = null;
 var status = null;
-var speeders = [40, 30, 20, 10, 10, 5];
+var speeders = [400, 300, 200, 100];
 var lineSlideIndex = 0;
 var screen = null;
+var hero = null;
 
 var lines = [
     [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
@@ -78,31 +79,80 @@ var lines = [
     [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0]
 ]
 
-document.getElementById("restartbtn").onclick = init;
+document.getElementById("restartbtn").onclick = reload;
 document.getElementById("pausebtn").onclick = pause;
 document.getElementById("resumebtn").onclick = resume;
 
-function move() {
-    for (c = 0 ;c < lines.length; c++) {
-        for (r = 0; r < lines[c].length; r++) {
-            if ((r + lineSlideIndex)%32 < 10) {
-                if (lines[c][r] == 1) {
-                    onPixel((r + lineSlideIndex)%32, c + 2);
-                } else {
-                    offPixel((r + lineSlideIndex)%32, c + 2);
-                }
+function getHero() {
+    return {x: 4, y: 10};
+}
+
+function refreshFullDisplay(hero, screen) {
+    for (var yc = 0; yc < 11; yc++) {
+        for (var xc = 0; xc < 10; xc++) {
+            if (screen[`y_${yc}`][`x_${xc}`] == 1) {
+                onPixel(xc, yc);
+            } else {
+                offPixel(xc, yc);
             }
         }
     }
+    onFoodPixel(hero.x, hero.y);
+}
 
+function isGameOver(hero, screen) {
+    if (screen[`y_${hero.y}`][`x_${hero.x}`] == 1) {
+        document.getElementById("message").innerText = "Game Over..!";
+        document.getElementById("gameover").play();
+        status = "stop";
+        clearInterval(timer);
+        timer = null;
+        return true;
+    }
+    return false;
+}
+
+function lineCreated(screen) {
+    var count = 0;
+    for (xc = 0; xc < 10; xc++) {
+        count += screen[`y_0`][`x_${xc}`];
+    }
+    if (count == 10) {
+        screen[`y_0`] = {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0};
+        for (xc = 0; xc < 10; xc++) {
+            offPixel(xc, 0);
+        }
+        level++;
+        document.getElementById("level").innerText = level;
+        speed = speed - speeders.shift();
+        clearInterval(timer);
+        timer = setInterval(moveUp, speed);
+        return true;
+    }
+    return false;
+}
+
+function move() {
+    for (xc = 0 ;xc < lines.length; xc++) {
+        for (yc = 0; yc < lines[xc].length; yc++) {
+            if ((yc + lineSlideIndex)%32 < 10) {
+                screen[`y_${xc + 2}`][`x_${(yc + lineSlideIndex)%32}`] = lines[xc][yc];
+            }
+        }
+    }
+    if (isGameOver(hero, screen)) {
+        return;
+    }
     lineSlideIndex++;
+    refreshFullDisplay(hero, screen)
 }
 
 function init() {
-    speed = 1000;
+    speed = 2000;
     level = 0;
     score = 0;
     status = "start";
+    lineSlideIndex = 0;
     screen = {
         y_0: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
         y_1: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
@@ -121,17 +171,8 @@ function init() {
     document.getElementById("message").innerText = "Game Started..!";
     document.getElementById("pause").style = "";
     document.getElementById("resume").style = "display: none;";
-/*
-    for (var xc = 0; xc < 10; xc++) {
-        for (var yc = 0; yc < 20; yc++) {
-            if (yc == 2 || yc == 4 || yc == 6 || yc == 8 || yc == 10 || yc == 12 || yc == 14 || yc == 16 || yc == 18) {
-                onPixel(xc, yc);
-            } else {
-                offPixel(xc, yc);
-            }
-        }
-    }
-*/
+    hero = getHero();
+    refreshFullDisplay(hero, screen);
     if (timer == null) {
         timer = setInterval(move, speed);
     }
@@ -160,28 +201,66 @@ function resume() {
 
 
 function moveUp() {
-    console.log("up");
+    if (status != "start" || hero == null || hero.y == 0 || ( hero.y == 1 && screen[`y_${hero.y - 1 }`][`x_${hero.x}`] == 1)) {
+        return;
+    }
+    offPixel(hero.x, hero.y);
+    hero.y = hero.y - 1;
+    if (hero.y == 0) {
+        screen[`y_0`][`x_${hero.x}`] = 1;
+        onPixel(hero.x, hero.y);
+        score++;
+        document.getElementById("score").innerText = score;
+        document.getElementById("rotate").play();
+        hero = getHero();
+    }
+    if (lineCreated(screen)) {
+        document.getElementById("speedup").play();
+    }
+    onFoodPixel(hero.x, hero.y);
+    isGameOver(hero, screen);
 }
 
 function moveLeft() {
-    console.log("left");
+    if (status != "start" || hero == null || hero.x == 0) {
+        return;
+    }
+    offPixel(hero.x, hero.y);
+    hero.x = hero.x - 1;
+    document.getElementById("move").play();
+    onFoodPixel(hero.x, hero.y);
+    isGameOver(hero, screen);
 }
 
 function moveRight() {
-    console.log("right");
+    if (status != "start" || hero == null || hero.x == 9) {
+        return;
+    }
+    offPixel(hero.x, hero.y);
+    hero.x = hero.x + 1;
+    document.getElementById("move").play();
+    onFoodPixel(hero.x, hero.y);
+    isGameOver(hero, screen);
 }
 
 function moveDown() {
-    console.log("down");
-    document.getElementById("level").innerText = level;
-    speed = speed - speeders.shift();
-    console.log("138 level", level, ", speed", speed);
-    clearInterval(timer);
-    timer = setInterval(moveUp, speed);
+    if (status != "start" || hero == null || hero.y == 10) {
+        return;
+    }
+    offPixel(hero.x, hero.y);
+    hero.y = hero.y + 1;
+    document.getElementById("move").play();
+    onFoodPixel(hero.x, hero.y);
+    isGameOver(hero, screen);
+}
+
+function reload() {
+    init();
+    move();
 }
 
 setupKeyUpListener(
-    init, // ReloadKey
+    reload, // ReloadKey
     () => {
         if (status == "start") {
             pause();

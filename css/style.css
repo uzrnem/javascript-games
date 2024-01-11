@@ -2,6 +2,7 @@
 --main-bg-color: #bfc8b2;
 --deem-color: #9da591;
 --dark-color: #000000;
+--food-color: #661091;
 --pixel-size: 0.6em;
 --pixel-border-size: 0.2em;
 }
@@ -21,6 +22,10 @@ span {
 .active {
     outline-color: var(--dark-color);
     background-color: var(--dark-color);
+}
+.food {
+    outline-color: var(--food-color);
+    background-color: var(--food-color);
 }
 table {
     background-color: var(--main-bg-color);

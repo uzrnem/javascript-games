@@ -101,11 +101,11 @@ function move() {
         console.debug(food)
     } else {
         var last = snake.pop()
-        document.getElementById(`pixel_${last.x}_${last.y}`).className = "";
+        offPixel(last.x, last.y);
     }
     console.debug(`pixel_${newHead.x}_${newHead.y}`, newHead);
-    document.getElementById(`pixel_${newHead.x}_${newHead.y}`).className = "active";
-    document.getElementById(`pixel_${food.x}_${food.y}`).className = "active";
+    onPixel(newHead.x, newHead.y);
+    onFoodPixel(food.x, food.y);
     snake.unshift(newHead);
 }
 
@@ -124,13 +124,13 @@ function init() {
     food = generateNewFood(snake);
     for (var xc = 0; xc < 10; xc++) {
         for (var yc = 0; yc < 20; yc++) {
-            document.getElementById(`pixel_${xc}_${yc}`).className = "";
+            offPixel(xc, yc);
         }
     }
     document.getElementById("level").innerText = level;
     document.getElementById("score").innerText = score;
-    document.getElementById("pixel_0_0").className = "active";
-    document.getElementById(`pixel_${food.x}_${food.y}`).className = "active";
+    onPixel(0, 0);
+    onFoodPixel(food.x, food.y);
     document.getElementById("message").innerText = "Game Started..!";
     document.getElementById("pause").style = "";
     document.getElementById("resume").style = "display: none;";

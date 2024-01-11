@@ -35,6 +35,10 @@ function onPixel(x, y) {
     document.getElementById(`pixel_${x}_${y}`).className = "active";
 }
 
+function onFoodPixel(x, y) {
+    document.getElementById(`pixel_${x}_${y}`).className = "food";
+}
+
 function offPixel(x, y) {
     document.getElementById(`pixel_${x}_${y}`).className = "";
 }
