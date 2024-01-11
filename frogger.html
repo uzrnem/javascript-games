@@ -1,0 +1,201 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/script.js"></script>
+</head>
+<body>
+    <div id="gamepanel"></div>
+</body>
+<script>
+
+function setupFroggerGameScreen() {
+    const containerDiv = document.createElement("div");
+    const table = document.createElement("table");
+    for (var yc = 0; yc < 11; yc++) {
+        if (yc > 1) {
+            const tr = document.createElement("tr");
+            for (var xc = 0; xc < 10; xc++) {
+                const td = document.createElement("td");
+                const span = document.createElement("span");
+                span.className = "active";
+                td.appendChild(span);
+                tr.appendChild(td);
+            }
+            table.appendChild(tr);
+        }
+        const tr = document.createElement("tr");
+        for (var xc = 0; xc < 10; xc++) {
+            const td = document.createElement("td");
+            const span = document.createElement("span");
+            span.id = `pixel_${xc}_${yc}`;
+            td.appendChild(span);
+            tr.appendChild(td);
+        }
+        table.appendChild(tr);
+    }
+    containerDiv.appendChild(table);
+    return containerDiv;
+}
+
+function setupFroggerGamePanel(name) {
+    document.title = name + " | Bricks Game";
+    const gamePanelDiv = document.getElementById("gamepanel");
+    gamePanelDiv.appendChild(setupFroggerGameScreen());
+
+    gamePanelDiv.appendChild(setupResultScreen(name));
+
+    for (const audio of audios) {
+        const srcTag = document.createElement("source");
+        srcTag.src = audio.src;
+        srcTag.type = "audio/ogg";
+        const audioTag = document.createElement("audio");
+        audioTag.id = audio.id;
+        audioTag.appendChild(srcTag);
+        document.body.appendChild(audioTag);
+    }
+}
+setupFroggerGamePanel("Frogger");
+
+var speed = null;
+var score = 0;
+var level = 1;
+var timer = null;
+var status = null;
+var speeders = [40, 30, 20, 10, 10, 5];
+var lineSlideIndex = 0;
+var screen = null;
+
+var lines = [
+    [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+    [1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0],
+    [1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0],
+    [1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1],
+    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0]
+]
+
+document.getElementById("restartbtn").onclick = init;
+document.getElementById("pausebtn").onclick = pause;
+document.getElementById("resumebtn").onclick = resume;
+
+function move() {
+    for (c = 0 ;c < lines.length; c++) {
+        for (r = 0; r < lines[c].length; r++) {
+            if ((r + lineSlideIndex)%32 < 10) {
+                if (lines[c][r] == 1) {
+                    onPixel((r + lineSlideIndex)%32, c + 2);
+                } else {
+                    offPixel((r + lineSlideIndex)%32, c + 2);
+                }
+            }
+        }
+    }
+
+    lineSlideIndex++;
+}
+
+function init() {
+    speed = 1000;
+    level = 0;
+    score = 0;
+    status = "start";
+    screen = {
+        y_0: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+        y_1: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+        y_2: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+        y_3: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+        y_4: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+        y_5: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+        y_6: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+        y_7: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+        y_8: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+        y_9: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+        y_10: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+    };
+    document.getElementById("level").innerText = level;
+    document.getElementById("score").innerText = score;
+    document.getElementById("message").innerText = "Game Started..!";
+    document.getElementById("pause").style = "";
+    document.getElementById("resume").style = "display: none;";
+/*
+    for (var xc = 0; xc < 10; xc++) {
+        for (var yc = 0; yc < 20; yc++) {
+            if (yc == 2 || yc == 4 || yc == 6 || yc == 8 || yc == 10 || yc == 12 || yc == 14 || yc == 16 || yc == 18) {
+                onPixel(xc, yc);
+            } else {
+                offPixel(xc, yc);
+            }
+        }
+    }
+*/
+    if (timer == null) {
+        timer = setInterval(move, speed);
+    }
+}
+
+function pause() {
+    if (status == "start") {
+        status = "pause";
+        clearInterval(timer);
+        timer = null;
+        document.getElementById("message").innerText = "Game Paused..!";
+        document.getElementById("pause").style = "display: none;";
+        document.getElementById("resume").style = "";
+    }
+}
+
+function resume() {
+    if (status == "pause") {
+        status = "start";
+        timer = setInterval(move, speed);
+        document.getElementById("message").innerText = "Game Resumed..!";
+        document.getElementById("pause").style = "";
+        document.getElementById("resume").style = "display: none;";
+    }
+}
+
+
+function moveUp() {
+    console.log("up");
+}
+
+function moveLeft() {
+    console.log("left");
+}
+
+function moveRight() {
+    console.log("right");
+}
+
+function moveDown() {
+    console.log("down");
+    document.getElementById("level").innerText = level;
+    speed = speed - speeders.shift();
+    console.log("138 level", level, ", speed", speed);
+    clearInterval(timer);
+    timer = setInterval(moveUp, speed);
+}
+
+setupKeyUpListener(
+    init, // ReloadKey
+    () => {
+        if (status == "start") {
+            pause();
+        } else if (status == "pause") {
+            resume();
+        }
+    }, // SpaceKey
+    moveUp,
+    moveDown,
+    moveLeft,
+    moveRight
+)
+
+init();
+move();
+</script>
+</html>
