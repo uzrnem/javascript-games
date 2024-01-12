@@ -63,20 +63,20 @@ var score = 0;
 var level = 1;
 var timer = null;
 var status = null;
-var speeders = [400, 300, 200, 100];
+var speeders = null;
 var lineSlideIndex = 0;
 var screen = null;
 var hero = null;
 
 var lines = [
-    [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-    [1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0],
-    [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0],
-    [1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0],
-    [0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0],
-    [1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1],
-    [0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0]
+    [1, 1, 0, 0, 0, 0, 0, 1], //5s*3i , 2i*5s*1i
+    [1, 0, 0, 0, 0, 1, 1, 1], //4s*4i , i*4s*3i
+    [1, 1, 1, 0, 0, 0, 0, 1], //4s*4i , 3i*4s*i
+    [1, 0, 0, 0, 0, 1, 1, 1], //4s*4i , i*4s*3i
+    [0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1], //3s*1i*4s*2i*4s*2i
+    [1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1], //5s*5i*4s*2i , i*4s*2i*5s*4i
+    [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0], //5s*4i*5s*2i , 3s*2i*5s*4i*2s
+    [0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0]  //5s*4i*5s*2i , 2s*2i*5s*4i*3s
 ]
 
 document.getElementById("restartbtn").onclick = reload;
@@ -133,13 +133,23 @@ function lineCreated(screen) {
 }
 
 function move() {
-    for (xc = 0 ;xc < lines.length; xc++) {
-        for (yc = 0; yc < lines[xc].length; yc++) {
-            if ((yc + lineSlideIndex)%32 < 10) {
-                screen[`y_${xc + 2}`][`x_${(yc + lineSlideIndex)%32}`] = lines[xc][yc];
+    for (yc = 0 ;yc < lines.length; yc++) {
+        for (xc = 0; xc < 10; xc++) {
+            screen[`y_${yc + 2}`][`x_${xc}`] = lines[yc][(xc + lineSlideIndex) % lines[yc].length];
+        }
+    }
+    console.log(lines)
+    /*
+    for (yc = 0 ;yc < lines.length; yc++) {
+        for (xc = 0; xc < 10; xc++) {
+            if (lines[yc][(xc) % lines[yc].length] == 0) {
+                offPixel(xc, yc);
+            } else {
+                onPixel(xc, yc);
             }
         }
     }
+    */
     if (isGameOver(hero, screen)) {
         return;
     }
@@ -148,7 +158,8 @@ function move() {
 }
 
 function init() {
-    speed = 2000;
+    speed = 1500;
+    speeders = [300, 200, 100, 50];
     level = 0;
     score = 0;
     status = "start";
