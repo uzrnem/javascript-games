@@ -104,9 +104,11 @@ function removeCompletedLines() {
         if (score % 5 == 0 && speeders.length > 0) {
             level++;
             document.getElementById("level").innerText = level;
-            speed = speed - speeders.shift();
-            clearInterval(timer);
-            timer = setInterval(moveUp, speed);
+            if (speeders.length > 0) {
+                speed = speed - speeders.shift();
+                clearInterval(timer);
+                timer = setInterval(move, speed);
+            }
         }
         document.getElementById("speedup").play();
     }

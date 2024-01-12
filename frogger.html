@@ -16,10 +16,13 @@ function setupFroggerGameScreen() {
     for (var yc = 0; yc < 11; yc++) {
         if (yc > 1) {
             const tr = document.createElement("tr");
+            tr.id = `tr_for_level_${7-yc}`
             for (var xc = 0; xc < 10; xc++) {
                 const td = document.createElement("td");
                 const span = document.createElement("span");
-                span.className = "active";
+                if (yc > 5) {
+                    span.className = "active";
+                }
                 td.appendChild(span);
                 tr.appendChild(td);
             }
@@ -69,14 +72,14 @@ var screen = null;
 var hero = null;
 
 var lines = [
-    [1, 1, 0, 0, 0, 0, 0, 1], //5s*3i , 2i*5s*1i
-    [1, 0, 0, 0, 0, 1, 1, 1], //4s*4i , i*4s*3i
+    [1, 1, 1, 0, 0, 0, 0, 0], //5s*3i , 3i*5s
+    [0, 1, 1, 1, 1, 0, 0, 0], //4s*4i , s*4i*3s
     [1, 1, 1, 0, 0, 0, 0, 1], //4s*4i , 3i*4s*i
-    [1, 0, 0, 0, 0, 1, 1, 1], //4s*4i , i*4s*3i
-    [0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1], //3s*1i*4s*2i*4s*2i
-    [1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1], //5s*5i*4s*2i , i*4s*2i*5s*4i
-    [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0], //5s*4i*5s*2i , 3s*2i*5s*4i*2s
-    [0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0]  //5s*4i*5s*2i , 2s*2i*5s*4i*3s
+    [0, 1, 1, 1, 1, 0, 0, 0], //4s*4i , s*4i*3s
+    [1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0], //4s*2i*3s*1i*4s*2i
+    [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0], //5s*5i*4s*2i , 3s*2i*5s*5i*s
+    [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1], //5s*4i*5s*2i , 5s*2i*5s*4i
+    [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1]  //5s*4i*5s*2i , i*5s*2i*5s*3i
 ]
 
 document.getElementById("restartbtn").onclick = reload;
@@ -124,43 +127,39 @@ function lineCreated(screen) {
         }
         level++;
         document.getElementById("level").innerText = level;
-        speed = speed - speeders.shift();
-        clearInterval(timer);
-        timer = setInterval(moveUp, speed);
+        if (level <= 5) {
+            var tr = document.getElementById(`tr_for_level_${level}`);
+            var spans = tr.getElementsByTagName('span');
+            for (var i = 0; i < spans.length; i++) {
+                spans[i].className = "active";
+            }
+        } else if (speeders.length > 0) {
+            speed = speed - speeders.shift();
+            clearInterval(timer);
+            timer = setInterval(move, speed);
+        }
         return true;
     }
     return false;
 }
 
 function move() {
-    for (yc = 0 ;yc < lines.length; yc++) {
-        for (xc = 0; xc < 10; xc++) {
-            screen[`y_${yc + 2}`][`x_${xc}`] = lines[yc][(xc + lineSlideIndex) % lines[yc].length];
+    for (yc = lines.length - 1; (yc >= 0 && yc > (4 - level)); yc--) {
+        for (var xc = 9; xc >= 0; xc--) {
+            screen[`y_${yc + 2}`][`x_${xc}`] = lines[yc][(9 - xc + lineSlideIndex) % lines[yc].length];
         }
     }
-    console.log(lines)
-    /*
-    for (yc = 0 ;yc < lines.length; yc++) {
-        for (xc = 0; xc < 10; xc++) {
-            if (lines[yc][(xc) % lines[yc].length] == 0) {
-                offPixel(xc, yc);
-            } else {
-                onPixel(xc, yc);
-            }
-        }
-    }
-    */
     if (isGameOver(hero, screen)) {
         return;
     }
     lineSlideIndex++;
-    refreshFullDisplay(hero, screen)
+    refreshFullDisplay(hero, screen);
 }
 
 function init() {
     speed = 1500;
-    speeders = [300, 200, 100, 50];
-    level = 0;
+    speeders = [400, 300, 200, 100];
+    level = 1;
     score = 0;
     status = "start";
     lineSlideIndex = 0;
@@ -226,6 +225,8 @@ function moveUp() {
         hero = getHero();
     }
     if (lineCreated(screen)) {
+        lineSlideIndex --;
+        move();
         document.getElementById("speedup").play();
     }
     onFoodPixel(hero.x, hero.y);
