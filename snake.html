@@ -85,9 +85,11 @@ function move() {
         if (score % 5 == 0 && speeders.length > 0) {
             level++;
             document.getElementById("level").innerText = level;
-            speed = speed - speeders.shift();
-            clearInterval(timer);
-            timer = setInterval(move, speed);
+            if (speeders.length > 0) {
+                speed = speed - speeders.shift();
+                clearInterval(timer);
+                timer = setInterval(move, speed);
+            }
         }
         document.getElementById("score").innerText = score;
         food = generateNewFood(snake);
