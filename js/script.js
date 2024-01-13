@@ -7,15 +7,15 @@ const tags = [
 
 const buttons = [
     {id: "restart", name: "Restart", callback: "init()", text: "Restart: ", optionalKey: "[R / Del]", initDisplayNone: false},
-    {id: "pause", name: "Pause", callback: "pause()", text: "Pause: ", optionalKey: "[space]", initDisplayNone: false},
-    {id: "resume", name: "Resume", callback: "resume()", text: "Resume: ", optionalKey: "[space]", initDisplayNone: true},
+    {id: "pause", name: "Pause", callback: "pause()", text: "Pause: ", optionalKey: "[Enter]", initDisplayNone: false},
+    {id: "resume", name: "Resume", callback: "resume()", text: "Resume: ", optionalKey: "[Enter]", initDisplayNone: true},
 ];
 
 const links = [
     {id: "snake", name: "Snake", url: "./snake.html"},
     {id: "tetris", name: "Tetris", url: "./tetris.html"},
     {id: "frogger", name: "Frogger", url: "./frogger.html"},
-    {id: "tank", name: "Tank", url: "./tank.html"},
+    {id: "tank", name: "Tank [Beta]", url: "./tank.html"},
     {id: "racing", name: "Racing", url: "./racing.html"}
 ]
 
@@ -116,7 +116,7 @@ function setupResultScreen(name) {
             const a = document.createElement("a");
             a.href = link.url;
             a.innerText = link.name;
-            if (name == link.name) {
+            if (name.toLowerCase() == link.id) {
                 a.style = "font-weight: bold;";
             }
             td.appendChild(a);
@@ -197,7 +197,7 @@ function setupKeyUpListener(
     rightKeyFunc
 ) {
     document.addEventListener('keyup', (e) => {
-        if (e.code == 'Space') {
+        if (e.code == 'Enter') {
             spaceFunc();
         } else if ((e.code == 'ArrowUp' || e.code == 'KeyW')) {
             upKeyFunc();

@@ -165,6 +165,7 @@ function init() {
     lineSlideIndex = 0;
     screen = {
         y_0: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
+        //y_0: {x_0: 1, x_1: 1, x_2: 1, x_3: 1, x_4: 0, x_5: 1, x_6: 1, x_7: 1, x_8: 1, x_9: 1},
         y_1: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
         y_2: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
         y_3: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
@@ -176,6 +177,13 @@ function init() {
         y_9: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
         y_10: {x_0: 0, x_1: 0, x_2: 0, x_3: 0, x_4: 0, x_5: 0, x_6: 0, x_7: 0, x_8: 0, x_9: 0},
     };
+    for (var i = 5; i <= 5; i++) {
+        var tr = document.getElementById(`tr_for_level_${i}`);
+        var spans = tr.getElementsByTagName('span');
+        for (var i = 0; i < spans.length; i++) {
+            spans[i].className = "";
+        }
+    }
     document.getElementById("level").innerText = level;
     document.getElementById("score").innerText = score;
     document.getElementById("message").innerText = "Game Started..!";
