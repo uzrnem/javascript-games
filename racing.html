@@ -140,7 +140,7 @@ function moveUp() {
                 if (speeders.length > 0) {
                     speed = speed - speeders.shift();
                     clearInterval(timer);
-                    timer = setInterval(move, speed);
+                    timer = setInterval(moveUp, speed);
                 }
             } 
             document.getElementById("score").innerText = score;
