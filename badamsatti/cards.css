@@ -1,0 +1,1077 @@
+/**
+ * Styles for CSS Playing Cards
+ *
+ * @author   Anika Henke <anika@selfthinker.org>
+ * @license  CC BY-SA [http://creativecommons.org/licenses/by-sa/3.0]
+ * @version  2011-06-14
+ * @link     http://selfthinker.github.com/CSS-Playing-Cards/
+ */
+
+/* card itself
+********************************************************************/
+
+.playingCards .p-card {
+    display: inline-block;
+    width: 3.3em;
+    height: 4.6em;
+    border: 1px solid #666;
+    border-radius: .3em;
+    -moz-border-radius: .3em;
+    -webkit-border-radius: .3em;
+    -khtml-border-radius: .3em;
+    padding: .25em;
+    margin: 0 .5em .5em 0;
+    text-align: center;
+    font-size: 1.2em; /* @change: adjust this value to make bigger or smaller cards */
+    font-weight: normal;
+    font-family: Arial, sans-serif;
+    position: relative;
+    background-color: #fff;
+    -moz-box-shadow: .2em .2em .5em #333;
+    -webkit-box-shadow: .2em .2em .5em #333;
+    box-shadow: .2em .2em .5em #333;
+}
+
+.playingCards a.p-card {
+    text-decoration: none;
+}
+/* selected and hover state */
+.playingCards a.p-card:active, .playingCards a.p-card:focus,
+.playingCards label.p-card:hover,
+.playingCards strong .p-card {
+    bottom: 1em;
+}
+.playingCards label.p-card {
+    cursor: pointer;
+}
+
+.playingCards .p-card.back {
+    text-indent: -4000px;
+    background-color: #ccc;
+    background-repeat: repeat;
+    background-image: -moz-repeating-linear-gradient(34% 6% 135deg,#335bcc, #333c66, #333c66 50%);
+    background-image: -webkit-gradient(radial, center center, 20, center center, 80, from(#335bcc), color-stop(0.4, #333c66), to(#333c66));
+    /* yes, it's intentional that Mozilla, Webkit, Opera and IE all will get different backgrounds ... why not? :) */
+}
+
+/* suit colours
+********************************************************************/
+
+.playingCards .p-card.diams {
+    color: #f00 !important;
+}
+.playingCards.fourColours .p-card.diams {
+    color: #00f !important;
+}
+[lang=de] .playingCards.fourColours .p-card.diams {
+    color: #f60 !important;
+}
+.playingCards .p-card.hearts {
+    color: #f00 !important;
+}
+.playingCards .p-card.spades {
+    color: #000 !important;
+}
+[lang=de] .playingCards.fourColours .p-card.spades {
+    color: #090 !important;
+}
+.playingCards .p-card.clubs {
+    color: #000 !important;
+}
+.playingCards.fourColours .p-card.clubs {
+    color: #090 !important;
+}
+[lang=de] .playingCards.fourColours .p-card.clubs {
+    color: #000 !important;
+}
+.playingCards .p-card.joker {
+    color: #000 !important;
+}
+.playingCards .p-card.joker.big {
+    color: #f00 !important;
+}
+
+/* inner bits
+********************************************************************/
+
+/* top left main info (rank and suit) */
+
+.playingCards .p-card .rank,
+.playingCards .p-card .suit {
+    display: block;
+    line-height: 1;
+    text-align: left;
+}
+.playingCards .p-card .rank {
+}
+.playingCards .p-card .suit {
+    line-height: .7;
+}
+
+/* checkbox */
+.playingCards .p-card input {
+    margin-top: -.05em;
+    font: inherit;
+}
+.playingCards.simpleCards .p-card input,
+.playingCards .p-card.rank-j input,
+.playingCards .p-card.rank-q input,
+.playingCards .p-card.rank-k input,
+.playingCards .p-card.rank-a input {
+    margin-top: 2.4em;
+}
+.playingCards.inText .p-card input {
+    margin-top: 0;
+}
+
+/* different rank letters for different languages */
+.playingCards .p-card .rank:after,
+.playingCards .p-card.joker .rank:before {
+    position: absolute;
+    top: .25em;
+    left: .25em;
+    background: #fff;
+}
+[lang=de] .playingCards .p-card.rank-j .rank:after {
+    content: "B";
+}
+[lang=fr] .playingCards .p-card.rank-j .rank:after {
+    content: "V";
+}
+[lang=de] .playingCards .p-card.rank-q .rank:after,
+[lang=fr] .playingCards .p-card.rank-q .rank:after {
+    content: "D";
+}
+[lang=fr] .playingCards .p-card.rank-k .rank:after {
+    content: "R";
+}
+
+/* joker (top left symbol) */
+.playingCards .p-card.joker .rank {
+    position: absolute;
+}
+.playingCards .p-card.joker .rank:before {
+    content: "\2605";
+    top: 0;
+    left: 0;
+}
+.playingCards .p-card.joker .suit {
+    text-indent: -9999px;
+}
+
+/* inner multiple suits */
+.playingCards .p-card .suit:after {
+    display: block;
+    margin-top: -.8em;
+    text-align: center;
+    white-space: pre;
+    line-height: .9;
+    font-size: 1em;
+    word-spacing: -.05em;
+}
+
+/* make the hearts and clubs symbols fit, because they are a bit bigger than the others */
+.playingCards .p-card.hearts .suit:after {
+    word-spacing: -.15em;
+}
+.playingCards .p-card.hearts.rank-10 .suit:after {
+    word-spacing: -.05em;
+    letter-spacing: -.1em;
+}
+.playingCards .p-card.clubs.rank-10 .suit:after {
+    word-spacing: -.15em;
+}
+
+/* 8, 9, 10 are the most crowded */
+.playingCards .p-card.rank-8 .suit:after,
+.playingCards .p-card.rank-9 .suit:after {
+    letter-spacing: -.075em;
+}
+.playingCards .p-card.rank-10 .suit:after {
+    letter-spacing: -.1em;
+}
+.playingCards .p-card.clubs .suit:after {
+    letter-spacing: -.125em;
+}
+
+/*____________ symbols in the middle (suits, full) ____________*/
+
+/* diamonds */
+.playingCards .p-card.rank-2.diams .suit:after {
+    content: "\2666 \A\A\2666";
+}
+.playingCards .p-card.rank-3.diams .suit:after {
+    content: "\2666 \A\2666 \A\2666";
+}
+.playingCards .p-card.rank-4.diams .suit:after {
+    content: "\2666\00A0\00A0\00A0\2666 \A\A\2666\00A0\00A0\00A0\2666";
+}
+.playingCards .p-card.rank-5.diams .suit:after {
+    content: "\2666\00A0\00A0\00A0\2666 \A\2666 \A\2666\00A0\00A0\00A0\2666";
+}
+.playingCards .p-card.rank-6.diams .suit:after {
+    content: "\2666\00A0\00A0\00A0\2666 \A\2666\00A0\00A0\00A0\2666 \A\2666\00A0\00A0\00A0\2666";
+}
+.playingCards .p-card.rank-7.diams .suit:after {
+    content: "\2666\00A0\00A0\2666 \A\2666\00A0\2666\00A0\2666 \A\2666\00A0\00A0\2666";
+}
+.playingCards .p-card.rank-8.diams .suit:after {
+    content: "\2666\00A0\2666\00A0\2666 \A\2666\00A0\00A0\2666 \A\2666\00A0\2666\00A0\2666";
+}
+.playingCards .p-card.rank-9.diams .suit:after {
+    content: "\2666\00A0\2666\00A0\2666 \A\2666\00A0\2666\00A0\2666 \A\2666\00A0\2666\00A0\2666";
+}
+.playingCards .p-card.rank-10.diams .suit:after {
+    content: "\2666\00A0\2666\00A0\2666 \A\2666\00A0\2666\00A0\2666\00A0\2666 \A\2666\00A0\2666\00A0\2666";
+}
+
+/* hearts */
+.playingCards .p-card.rank-2.hearts .suit:after {
+    content: "\2665 \A\A\2665";
+}
+.playingCards .p-card.rank-3.hearts .suit:after {
+    content: "\2665 \A\2665 \A\2665";
+}
+.playingCards .p-card.rank-4.hearts .suit:after {
+    content: "\2665\00A0\00A0\00A0\2665 \A\A\2665\00A0\00A0\00A0\2665";
+}
+.playingCards .p-card.rank-5.hearts .suit:after {
+    content: "\2665\00A0\00A0\00A0\2665 \A\2665 \A\2665\00A0\00A0\00A0\2665";
+}
+.playingCards .p-card.rank-6.hearts .suit:after {
+    content: "\2665\00A0\00A0\00A0\2665 \A\2665\00A0\00A0\00A0\2665 \A\2665\00A0\00A0\00A0\2665";
+}
+.playingCards .p-card.rank-7.hearts .suit:after {
+    content: "\2665\00A0\00A0\2665 \A\2665\00A0\2665\00A0\2665 \A\2665\00A0\00A0\2665";
+}
+.playingCards .p-card.rank-8.hearts .suit:after {
+    content: "\2665\00A0\2665\00A0\2665 \A\2665\00A0\00A0\2665 \A\2665\00A0\2665\00A0\2665";
+}
+.playingCards .p-card.rank-9.hearts .suit:after {
+    content: "\2665\00A0\2665\00A0\2665 \A\2665\00A0\2665\00A0\2665 \A\2665\00A0\2665\00A0\2665";
+}
+.playingCards .p-card.rank-10.hearts .suit:after {
+    content: "\2665\00A0\2665\00A0\2665 \A\2665\00A0\2665\00A0\2665\00A0\2665 \A\2665\00A0\2665\00A0\2665";
+}
+
+/* spades */
+.playingCards .p-card.rank-2.spades .suit:after {
+    content: "\2660 \A\A\2660";
+}
+.playingCards .p-card.rank-3.spades .suit:after {
+    content: "\2660 \A\2660 \A\2660";
+}
+.playingCards .p-card.rank-4.spades .suit:after {
+    content: "\2660\00A0\00A0\00A0\2660 \A\A\2660\00A0\00A0\00A0\2660";
+}
+.playingCards .p-card.rank-5.spades .suit:after {
+    content: "\2660\00A0\00A0\00A0\2660 \A\2660 \A\2660\00A0\00A0\00A0\2660";
+}
+.playingCards .p-card.rank-6.spades .suit:after {
+    content: "\2660\00A0\00A0\00A0\2660 \A\2660\00A0\00A0\00A0\2660 \A\2660\00A0\00A0\00A0\2660";
+}
+.playingCards .p-card.rank-7.spades .suit:after {
+    content: "\2660\00A0\00A0\2660 \A\2660\00A0\2660\00A0\2660 \A\2660\00A0\00A0\2660";
+}
+.playingCards .p-card.rank-8.spades .suit:after {
+    content: "\2660\00A0\2660\00A0\2660 \A\2660\00A0\00A0\2660 \A\2660\00A0\2660\00A0\2660";
+}
+.playingCards .p-card.rank-9.spades .suit:after {
+    content: "\2660\00A0\2660\00A0\2660 \A\2660\00A0\2660\00A0\2660 \A\2660\00A0\2660\00A0\2660";
+}
+.playingCards .p-card.rank-10.spades .suit:after {
+    content: "\2660\00A0\2660\00A0\2660 \A\2660\00A0\2660\00A0\2660\00A0\2660 \A\2660\00A0\2660\00A0\2660";
+}
+
+/* clubs */
+.playingCards .p-card.rank-2.clubs .suit:after {
+    content: "\2663 \A\A\2663";
+}
+.playingCards .p-card.rank-3.clubs .suit:after {
+    content: "\2663 \A\2663 \A\2663";
+}
+.playingCards .p-card.rank-4.clubs .suit:after {
+    content: "\2663\00A0\00A0\00A0\2663 \A\A\2663\00A0\00A0\00A0\2663";
+}
+.playingCards .p-card.rank-5.clubs .suit:after {
+    content: "\2663\00A0\00A0\00A0\2663 \A\2663 \A\2663\00A0\00A0\00A0\2663";
+}
+.playingCards .p-card.rank-6.clubs .suit:after {
+    content: "\2663\00A0\00A0\00A0\2663 \A\2663\00A0\00A0\00A0\2663 \A\2663\00A0\00A0\00A0\2663";
+}
+.playingCards .p-card.rank-7.clubs .suit:after {
+    content: "\2663\00A0\00A0\2663 \A\2663\00A0\2663\00A0\2663 \A\2663\00A0\00A0\2663";
+}
+.playingCards .p-card.rank-8.clubs .suit:after {
+    content: "\2663\00A0\2663\00A0\2663 \A\2663\00A0\00A0\2663 \A\2663\00A0\2663\00A0\2663";
+}
+.playingCards .p-card.rank-9.clubs .suit:after {
+    content: "\2663\00A0\2663\00A0\2663 \A\2663\00A0\2663\00A0\2663 \A\2663\00A0\2663\00A0\2663";
+}
+.playingCards .p-card.rank-10.clubs .suit:after {
+    content: "\2663\00A0\2663\00A0\2663 \A\2663\00A0\2663\00A0\2663\00A0\2663 \A\2663\00A0\2663\00A0\2663";
+}
+
+/*____________ symbols in the middle (faces as images) ____________*/
+
+.playingCards.faceImages .p-card.rank-j .suit:after,
+.playingCards.faceImages .p-card.rank-q .suit:after,
+.playingCards.faceImages .p-card.rank-k .suit:after {
+    content: '';
+}
+.playingCards.faceImages .p-card.rank-j,
+.playingCards.faceImages .p-card.rank-q,
+.playingCards.faceImages .p-card.rank-k,
+.playingCards.faceImages .p-card.joker {
+    background-repeat: no-repeat;
+    background-position: -1em 0;
+    /* @change: smaller cards: more negative distance from the left
+       bigger cards: 0 or more positive distance from the left */
+
+    /* for a centered full background image:
+    background-position: .35em 0;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    -webkit-background-size: contain;
+    -khtml-background-size: contain;
+    background-size: contain;
+    */
+}
+
+.playingCards.faceImages .p-card.rank-j.diams  { background-image: url(faces/JD.gif); }
+.playingCards.faceImages .p-card.rank-j.hearts { background-image: url(faces/JH.gif); }
+.playingCards.faceImages .p-card.rank-j.spades { background-image: url(faces/JS.gif); }
+.playingCards.faceImages .p-card.rank-j.clubs  { background-image: url(faces/JC.gif); }
+
+.playingCards.faceImages .p-card.rank-q.diams  { background-image: url(faces/QD.gif); }
+.playingCards.faceImages .p-card.rank-q.hearts { background-image: url(faces/QH.gif); }
+.playingCards.faceImages .p-card.rank-q.spades { background-image: url(faces/QS.gif); }
+.playingCards.faceImages .p-card.rank-q.clubs  { background-image: url(faces/QC.gif); }
+
+.playingCards.faceImages .p-card.rank-k.diams  { background-image: url(faces/KD.gif); }
+.playingCards.faceImages .p-card.rank-k.hearts { background-image: url(faces/KH.gif); }
+.playingCards.faceImages .p-card.rank-k.spades { background-image: url(faces/KS.gif); }
+.playingCards.faceImages .p-card.rank-k.clubs  { background-image: url(faces/KC.gif); }
+
+.playingCards.faceImages .p-card.joker         { background-image: url(faces/joker.gif); }
+.playingCards.simpleCards .p-card.rank-j,
+.playingCards.simpleCards .p-card.rank-q,
+.playingCards.simpleCards .p-card.rank-k       { background-image: none !important; }
+
+/*____________ symbols in the middle (faces as dingbat symbols) ____________*/
+
+.playingCards.simpleCards .p-card .suit:after,
+.playingCards .p-card.rank-j .suit:after,
+.playingCards .p-card.rank-q .suit:after,
+.playingCards .p-card.rank-k .suit:after,
+.playingCards .p-card.rank-a .suit:after,
+.playingCards .p-card.joker .rank:after {
+    font-family: Georgia, serif;
+    position: absolute;
+    font-size: 3em;
+    right: .1em;
+    bottom: .25em;
+    word-spacing: normal;
+    letter-spacing: normal;
+    line-height: 1;
+}
+.playingCards .p-card.rank-j .suit:after {
+    content: "\265F";
+    right: .15em;
+}
+.playingCards .p-card.rank-q .suit:after {
+    content: "\265B";
+}
+.playingCards .p-card.rank-k .suit:after {
+    content: "\265A";
+}
+/* joker (inner symbol) */
+.playingCards.faceImages .p-card.joker .rank:after {
+    content: "";
+}
+.playingCards .p-card.joker .rank:after {
+    position: absolute;
+    content: "\2766";
+    top: .4em;
+    left: .1em;
+}
+
+/* big suits in middle */
+.playingCards.simpleCards .p-card .suit:after,
+.playingCards .p-card.rank-a .suit:after {
+    font-family: Arial, sans-serif;
+    line-height: .9;
+    bottom: .35em;
+}
+.playingCards.simpleCards .p-card.diams .suit:after,
+.playingCards .p-card.rank-a.diams .suit:after {
+    content: "\2666";
+    right: .4em;
+}
+.playingCards.simpleCards .p-card.hearts .suit:after,
+.playingCards .p-card.rank-a.hearts .suit:after {
+    content: "\2665";
+    right: .35em;
+}
+.playingCards.simpleCards .p-card.spades .suit:after,
+.playingCards .p-card.rank-a.spades .suit:after {
+    content: "\2660";
+    right: .35em;
+}
+.playingCards.simpleCards .p-card.clubs .suit:after,
+.playingCards .p-card.rank-a.clubs .suit:after {
+    content: "\2663";
+    right: .3em;
+}
+
+/*____________ smaller cards for use inside text ____________*/
+
+.playingCards.inText .p-card {
+    font-size: .4em;
+    vertical-align: middle;
+}
+.playingCards.inText .p-card span.rank,
+.playingCards.inText .p-card span.suit {
+    text-align: center;
+}
+.playingCards.inText .p-card span.rank {
+    font-size: 2em;
+    margin-top: .2em;
+}
+.playingCards.inText .p-card span.suit {
+    font-size: 2.5em;
+}
+.playingCards.inText .p-card .suit:after,
+.playingCards.inText .p-card.joker .rank:after {
+    content: "" !important;
+}
+.playingCards.inText .p-card .rank:after {
+    left: .5em;
+    padding: 0 .1em;
+}
+
+
+/* hand (in your hand or on table or as a deck)
+********************************************************************/
+
+.playingCards ul.table,
+.playingCards ul.hand,
+.playingCards ul.deck {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 1.5em 0;
+    position: relative;
+    clear: both;
+}
+.playingCards ul.hand {
+    margin-bottom: 3.5em;
+}
+.playingCards ul.table li,
+.playingCards ul.hand li,
+.playingCards ul.deck li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    float: left;
+}
+
+.playingCards ul.hand,
+.playingCards ul.deck {
+    height: 6.5em;
+}
+.playingCards ul.hand li,
+.playingCards ul.deck li {
+    position: absolute;
+}
+.playingCards ul.hand li {
+    bottom: 0;
+}/*
+.playingCards ul.hand li:nth-child(1)  { left: 0; }
+.playingCards ul.hand li:nth-child(2)  { left: 1.1em; }
+.playingCards ul.hand li:nth-child(3)  { left: 2.2em; }
+.playingCards ul.hand li:nth-child(4)  { left: 3.3em; }
+.playingCards ul.hand li:nth-child(5)  { left: 4.4em; }
+.playingCards ul.hand li:nth-child(6)  { left: 5.5em; }
+.playingCards ul.hand li:nth-child(7)  { left: 6.6em; }
+.playingCards ul.hand li:nth-child(8)  { left: 7.7em; }
+.playingCards ul.hand li:nth-child(9)  { left: 8.8em; }
+.playingCards ul.hand li:nth-child(10) { left: 9.9em; }
+.playingCards ul.hand li:nth-child(11) { left: 11em; }
+.playingCards ul.hand li:nth-child(12) { left: 12.1em; }
+.playingCards ul.hand li:nth-child(13) { left: 13.2em; }
+
+.playingCards ul.hand li:nth-child(14) { left: 14.3em; }
+.playingCards ul.hand li:nth-child(15) { left: 15.4em; }
+.playingCards ul.hand li:nth-child(16) { left: 16.5em; }
+.playingCards ul.hand li:nth-child(17) { left: 17.6em; }
+.playingCards ul.hand li:nth-child(18) { left: 18.7em; }
+.playingCards ul.hand li:nth-child(19) { left: 19.8em; }
+.playingCards ul.hand li:nth-child(20) { left: 20.9em; }
+.playingCards ul.hand li:nth-child(21) { left: 22em; }
+.playingCards ul.hand li:nth-child(22) { left: 23.1em; }
+.playingCards ul.hand li:nth-child(23) { left: 24.2em; }
+.playingCards ul.hand li:nth-child(24) { left: 25.3em; }
+.playingCards ul.hand li:nth-child(25) { left: 26.4em; }
+.playingCards ul.hand li:nth-child(26) { left: 27.5em; }
+*/
+
+.playingCards ul.hand li:nth-child(1)  { left: 0; }
+.playingCards ul.hand li:nth-child(2)  { left: 2em; }
+.playingCards ul.hand li:nth-child(3)  { left: 4em; }
+.playingCards ul.hand li:nth-child(4)  { left: 6em; }
+.playingCards ul.hand li:nth-child(5)  { left: 8em; }
+.playingCards ul.hand li:nth-child(6)  { left: 10em; }
+.playingCards ul.hand li:nth-child(7)  { left: 12em; }
+.playingCards ul.hand li:nth-child(8)  { left: 14em; }
+.playingCards ul.hand li:nth-child(9)  { left: 16em; }
+
+.playingCards ul.hand li:nth-child(10)  { left: 0; }
+.playingCards ul.hand li:nth-child(11)  { left: 2em; }
+.playingCards ul.hand li:nth-child(12)  { left: 4em; }
+.playingCards ul.hand li:nth-child(13)  { left: 6em; }
+.playingCards ul.hand li:nth-child(14)  { left: 8em; }
+.playingCards ul.hand li:nth-child(15)  { left: 10em; }
+.playingCards ul.hand li:nth-child(16)  { left: 12em; }
+.playingCards ul.hand li:nth-child(17)  { left: 14em; }
+.playingCards ul.hand li:nth-child(18)  { left: 16em; }
+
+.playingCards ul.hand li:nth-child(19)  { left: 0; }
+.playingCards ul.hand li:nth-child(20)  { left: 2em; }
+.playingCards ul.hand li:nth-child(21)  { left: 4em; }
+.playingCards ul.hand li:nth-child(22)  { left: 6em; }
+.playingCards ul.hand li:nth-child(23)  { left: 8em; }
+.playingCards ul.hand li:nth-child(24)  { left: 10em; }
+.playingCards ul.hand li:nth-child(25)  { left: 12em; }
+.playingCards ul.hand li:nth-child(26)  { left: 14em; }
+.playingCards ul.hand li:nth-child(27)  { left: 16em; } /*
+.playingCards ul.hand li:nth-child(10) { left: 18em; }
+.playingCards ul.hand li:nth-child(11) { left: 20em; }
+.playingCards ul.hand li:nth-child(12) { left: 22em; }
+.playingCards ul.hand li:nth-child(13) { left: 24em; } */
+
+.playingCards ul.hand li { left: 24em; }
+
+/* rotate cards if rotateHand option is on */
+/*
+.playingCards.rotateHand ul.hand li:nth-child(1) {
+    -moz-transform: translate(1.9em, .9em) rotate(-42deg);
+    -webkit-transform: translate(1.9em, .9em) rotate(-42deg);
+    -o-transform: translate(1.9em, .9em) rotate(-42deg);
+    transform: translate(1.9em, .9em) rotate(-42deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(2) {
+    -moz-transform: translate(1.5em, .5em) rotate(-33deg);
+    -webkit-transform: translate(1.5em, .5em) rotate(-33deg);
+    -o-transform: translate(1.5em, .5em) rotate(-33deg);
+    transform: translate(1.5em, .5em) rotate(-33deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(3) {
+    -moz-transform: translate(1.1em, .3em) rotate(-24deg);
+    -webkit-transform: translate(1.1em, .3em) rotate(-24deg);
+    -o-transform: translate(1.1em, .3em) rotate(-24deg);
+    transform: translate(1.1em, .3em) rotate(-24deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(4) {
+    -moz-transform: translate(.7em, .2em) rotate(-15deg);
+    -webkit-transform: translate(.7em, .2em) rotate(-15deg);
+    -o-transform: translate(.7em, .2em) rotate(-15deg);
+    transform: translate(.7em, .2em) rotate(-15deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(5) {
+    -moz-transform: translate(.3em, .1em) rotate(-6deg);
+    -webkit-transform: translate(.3em, .1em) rotate(-6deg);
+    -o-transform: translate(.3em, .1em) rotate(-6deg);
+    transform: translate(.3em, .1em) rotate(-6deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(6) {
+    -moz-transform: translate(-.1em, .1em) rotate(3deg);
+    -webkit-transform: translate(-.1em, .1em) rotate(3deg);
+    -o-transform: translate(-.1em, .1em) rotate(3deg);
+    transform: translate(-.1em, .1em) rotate(3deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(7) {
+    -moz-transform: translate(-.5em, .2em) rotate(12deg);
+    -webkit-transform: translate(-.5em, .2em) rotate(12deg);
+    -o-transform: translate(-.5em, .2em) rotate(12deg);
+    transform: translate(-.5em, .2em) rotate(12deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(8) {
+    -moz-transform: translate(-.9em, .3em) rotate(21deg);
+    -webkit-transform: translate(-.9em, .3em) rotate(21deg);
+    -o-transform: translate(-.9em, .3em) rotate(21deg);
+    transform: translate(-.9em, .3em) rotate(21deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(9) {
+    -moz-transform: translate(-1.3em, .6em) rotate(30deg);
+    -webkit-transform: translate(-1.3em, .6em) rotate(30deg);
+    -o-transform: translate(-1.3em, .6em) rotate(30deg);
+    transform: translate(-1.3em, .6em) rotate(30deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(10) {
+    -moz-transform: translate(-1.7em, 1em) rotate(39deg);
+    -webkit-transform: translate(-1.7em, 1em) rotate(39deg);
+    -o-transform: translate(-1.7em, 1em) rotate(39deg);
+    transform: translate(-1.7em, 1em) rotate(39deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(11) {
+    -moz-transform: translate(-2.2em, 1.5em) rotate(48deg);
+    -webkit-transform: translate(-2.2em, 1.5em) rotate(48deg);
+    -o-transform: translate(-2.2em, 1.5em) rotate(48deg);
+    transform: translate(-2.2em, 1.5em) rotate(48deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(12) {
+    -moz-transform: translate(-2.8em, 2.1em) rotate(57deg);
+    -webkit-transform: translate(-2.8em, 2.1em) rotate(57deg);
+    -o-transform: translate(-2.8em, 2.1em) rotate(57deg);
+    transform: translate(-2.8em, 2.1em) rotate(57deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(13) {
+    -moz-transform: translate(-3.5em, 2.8em) rotate(66deg);
+    -webkit-transform: translate(-3.5em, 2.8em) rotate(66deg);
+    -o-transform: translate(-3.5em, 2.8em) rotate(66deg);
+    transform: translate(-3.5em, 2.8em) rotate(66deg);
+} */
+
+.playingCards.rotateHand ul.hand li:nth-child(1) {
+    -moz-transform: translate(1.9em, .9em) rotate(-36deg);
+    -webkit-transform: translate(1.9em, .9em) rotate(-36deg);
+    -o-transform: translate(1.9em, .9em) rotate(-36deg);
+    transform: translate(1.9em, .9em) rotate(-36deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(2) {
+    -moz-transform: translate(1.5em, .5em) rotate(-27deg);
+    -webkit-transform: translate(1.5em, .5em) rotate(-27deg);
+    -o-transform: translate(1.5em, .5em) rotate(-27deg);
+    transform: translate(1.5em, .5em) rotate(-27deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(3) {
+    -moz-transform: translate(1.1em, .3em) rotate(-18deg);
+    -webkit-transform: translate(1.1em, .3em) rotate(-18deg);
+    -o-transform: translate(1.1em, .3em) rotate(-18deg);
+    transform: translate(1.1em, .3em) rotate(-18deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(4) {
+    -moz-transform: translate(.7em, .2em) rotate(-9deg);
+    -webkit-transform: translate(.7em, .2em) rotate(-9deg);
+    -o-transform: translate(.7em, .2em) rotate(-9deg);
+    transform: translate(.7em, .2em) rotate(-9deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(5) {
+    -moz-transform: translate(.3em, .1em) rotate(0deg);
+    -webkit-transform: translate(.3em, .1em) rotate(0deg);
+    -o-transform: translate(.3em, .1em) rotate(0deg);
+    transform: translate(.3em, .1em) rotate(0deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(6) {
+    -moz-transform: translate(-.1em, .1em) rotate(9deg);
+    -webkit-transform: translate(-.1em, .1em) rotate(9deg);
+    -o-transform: translate(-.1em, .1em) rotate(9deg);
+    transform: translate(-.1em, .1em) rotate(9deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(7) {
+    -moz-transform: translate(-.5em, .2em) rotate(18deg);
+    -webkit-transform: translate(-.5em, .2em) rotate(18deg);
+    -o-transform: translate(-.5em, .2em) rotate(18deg);
+    transform: translate(-.5em, .2em) rotate(18deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(8) {
+    -moz-transform: translate(-.9em, .3em) rotate(27deg);
+    -webkit-transform: translate(-.9em, .3em) rotate(27deg);
+    -o-transform: translate(-.9em, .3em) rotate(27deg);
+    transform: translate(-.9em, .3em) rotate(27deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(9) {
+    -moz-transform: translate(-1.3em, .6em) rotate(36deg);
+    -webkit-transform: translate(-1.3em, .6em) rotate(36deg);
+    -o-transform: translate(-1.3em, .6em) rotate(36deg);
+    transform: translate(-1.3em, .6em) rotate(36deg);
+}
+
+
+.playingCards.rotateHand ul.hand li:nth-child(10) {
+    -moz-transform: translate(1.9em, 3.4em) rotate(-36deg);
+    -webkit-transform: translate(1.9em, 3.4em) rotate(-36deg);
+    -o-transform: translate(1.9em, 3.4em) rotate(-36deg);
+    transform: translate(1.9em, 3.4em) rotate(-36deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(11) {
+    -moz-transform: translate(1.5em, 3em) rotate(-27deg);
+    -webkit-transform: translate(1.5em, 3em) rotate(-27deg);
+    -o-transform: translate(1.5em, 3em) rotate(-27deg);
+    transform: translate(1.5em, 3em) rotate(-27deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(12) {
+    -moz-transform: translate(1.1em, 2.8em) rotate(-18deg);
+    -webkit-transform: translate(1.1em, 2.8em) rotate(-18deg);
+    -o-transform: translate(1.1em, 2.8em) rotate(-18deg);
+    transform: translate(1.1em, 2.8em) rotate(-18deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(13) {
+    -moz-transform: translate(.7em, 2.7em) rotate(-9deg);
+    -webkit-transform: translate(.7em, 2.7em) rotate(-9deg);
+    -o-transform: translate(.7em, 2.7em) rotate(-9deg);
+    transform: translate(.7em, 2.7em) rotate(-9deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(14) {
+    -moz-transform: translate(.3em, 3.1em) rotate(0deg);
+    -webkit-transform: translate(.3em, 3.1em) rotate(0deg);
+    -o-transform: translate(.3em, 3.1em) rotate(0deg);
+    transform: translate(.3em, 3.1em) rotate(0deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(15) {
+    -moz-transform: translate(-.1em, 3.1em) rotate(9deg);
+    -webkit-transform: translate(-.1em, 3.1em) rotate(9deg);
+    -o-transform: translate(-.1em, 3.1em) rotate(9deg);
+    transform: translate(-.1em, 3.1em) rotate(9deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(16) {
+    -moz-transform: translate(-.5em, 2.7em) rotate(18deg);
+    -webkit-transform: translate(-.5em, 2.7em) rotate(18deg);
+    -o-transform: translate(-.5em, 2.7em) rotate(18deg);
+    transform: translate(-.5em, 2.7em) rotate(18deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(17) {
+    -moz-transform: translate(-.9em, 2.8em) rotate(27deg);
+    -webkit-transform: translate(-.9em, 2.8em) rotate(27deg);
+    -o-transform: translate(-.9em, 2.8em) rotate(27deg);
+    transform: translate(-.9em, 2.8em) rotate(27deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(18) {
+    -moz-transform: translate(-1.3em, 3.1em) rotate(36deg);
+    -webkit-transform: translate(-1.3em, 3.1em) rotate(36deg);
+    -o-transform: translate(-1.3em, 3.1em) rotate(36deg);
+    transform: translate(-1.3em, 3.1em) rotate(36deg);
+}
+
+
+
+/* rotate cards if rotateHand option is on */
+.playingCards.rotateHand ul.hand li:nth-child(19) {
+    -moz-transform: translate(1.9em, 5.9em) rotate(-36deg);
+    -webkit-transform: translate(1.9em, 5.9em) rotate(-36deg);
+    -o-transform: translate(1.9em, 5.9em) rotate(-36deg);
+    transform: translate(1.9em, 5.9em) rotate(-36deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(20) {
+    -moz-transform: translate(1.5em, 5.5em) rotate(-27deg);
+    -webkit-transform: translate(1.5em, 5.5em) rotate(-27deg);
+    -o-transform: translate(1.5em, 5.5em) rotate(-27deg);
+    transform: translate(1.5em, 5.5em) rotate(-27deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(21) {
+    -moz-transform: translate(1.1em, 5.3em) rotate(-18deg);
+    -webkit-transform: translate(1.1em, 5.3em) rotate(-18deg);
+    -o-transform: translate(1.1em, 5.3em) rotate(-18deg);
+    transform: translate(1.1em, 5.3em) rotate(-18deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(22) {
+    -moz-transform: translate(.7em, 5.2em) rotate(-9deg);
+    -webkit-transform: translate(.7em, 5.2em) rotate(-9deg);
+    -o-transform: translate(.7em, 5.2em) rotate(-9deg);
+    transform: translate(.7em, 5.2em) rotate(-9deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(23) {
+    -moz-transform: translate(.3em, 5.1em) rotate(0deg);
+    -webkit-transform: translate(.3em, 5.1em) rotate(0deg);
+    -o-transform: translate(.3em, 5.1em) rotate(0deg);
+    transform: translate(.3em, 5.1em) rotate(0deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(24) {
+    -moz-transform: translate(-.1em, 5.1em) rotate(9deg);
+    -webkit-transform: translate(-.1em, 5.1em) rotate(9deg);
+    -o-transform: translate(-.1em, 5.1em) rotate(9deg);
+    transform: translate(-.1em, 5.1em) rotate(9deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(25) {
+    -moz-transform: translate(-.5em, 5.2em) rotate(18deg);
+    -webkit-transform: translate(-.5em, 5.2em) rotate(18deg);
+    -o-transform: translate(-.5em, 5.2em) rotate(18deg);
+    transform: translate(-.5em, 5.2em) rotate(18deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(26) {
+    -moz-transform: translate(-.9em, 5.3em) rotate(27deg);
+    -webkit-transform: translate(-.9em, 5.3em) rotate(27deg);
+    -o-transform: translate(-.9em, 5.3em) rotate(27deg);
+    transform: translate(-.9em, 5.3em) rotate(27deg);
+}
+.playingCards.rotateHand ul.hand li:nth-child(27) {
+    -moz-transform: translate(-1.3em, 5.6em) rotate(36deg);
+    -webkit-transform: translate(-1.3em, 5.6em) rotate(36deg);
+    -o-transform: translate(-1.3em, 5.6em) rotate(36deg);
+    transform: translate(-1.3em, 5.6em) rotate(36deg);
+}
+
+
+.playingCards.rotateHand ul.hand li {
+    -moz-transform: translate(-3.5em, 2.8em) rotate(66deg);
+    -webkit-transform: translate(-3.5em, 2.8em) rotate(66deg);
+    -o-transform: translate(-3.5em, 2.8em) rotate(66deg);
+    transform: translate(-3.5em, 2.8em) rotate(66deg);
+}
+
+/* deck */
+.playingCards ul.deck li:nth-child(1)  { left: 0;    bottom: 0; }
+.playingCards ul.deck li:nth-child(2)  { left: 2px;  bottom: 1px; }
+.playingCards ul.deck li:nth-child(3)  { left: 4px;  bottom: 2px; }
+.playingCards ul.deck li:nth-child(4)  { left: 6px;  bottom: 3px; }
+.playingCards ul.deck li:nth-child(5)  { left: 8px;  bottom: 4px; }
+.playingCards ul.deck li:nth-child(6)  { left: 10px; bottom: 5px; }
+.playingCards ul.deck li:nth-child(7)  { left: 12px; bottom: 6px; }
+.playingCards ul.deck li:nth-child(8)  { left: 14px; bottom: 7px; }
+.playingCards ul.deck li:nth-child(9)  { left: 16px; bottom: 8px; }
+.playingCards ul.deck li:nth-child(10) { left: 18px; bottom: 9px; }
+.playingCards ul.deck li:nth-child(11) { left: 20px; bottom: 10px; }
+.playingCards ul.deck li:nth-child(12) { left: 22px; bottom: 11px; }
+.playingCards ul.deck li:nth-child(13) { left: 24px; bottom: 12px; }
+.playingCards ul.deck li { left: 24px; bottom: 12px; }
+
+
+.playingCards.rotateHand ul.hand-deck li:nth-child(1) {
+    -moz-transform:  rotate(0deg);
+    -webkit-transform:  rotate(0deg);
+    -o-transform:  rotate(0deg);
+    transform:  rotate(0deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(2) {
+    -moz-transform:  rotate(7deg);
+    -webkit-transform:  rotate(7deg);
+    -o-transform:  rotate(7deg);
+    transform:  rotate(7deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(3) {
+    -moz-transform:  rotate(14deg);
+    -webkit-transform:  rotate(14deg);
+    -o-transform:  rotate(14deg);
+    transform:  rotate(14deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(4) {
+    -moz-transform: rotate(21deg);
+    -webkit-transform: rotate(21deg);
+    -o-transform: rotate(21deg);
+    transform: rotate(21deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(5) {
+    -moz-transform: rotate(28deg);
+    -webkit-transform: rotate(28deg);
+    -o-transform: rotate(28deg);
+    transform: rotate(28deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(6) {
+    -moz-transform: rotate(35deg);
+    -webkit-transform: rotate(35deg);
+    -o-transform: rotate(35deg);
+    transform: rotate(35deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(7) {
+    -moz-transform:  rotate(42deg);
+    -webkit-transform:  rotate(42deg);
+    -o-transform:  rotate(42deg);
+    transform:  rotate(42deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(8) {
+    -moz-transform:  rotate(49deg);
+    -webkit-transform:  rotate(49deg);
+    -o-transform:  rotate(49deg);
+    transform:  rotate(49deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(9) {
+    -moz-transform:  rotate(56deg);
+    -webkit-transform:  rotate(56deg);
+    -o-transform:  rotate(56deg);
+    transform:  rotate(56deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(10) {
+    -moz-transform:  rotate(63deg);
+    -webkit-transform:  rotate(63deg);
+    -o-transform:  rotate(63deg);
+    transform:  rotate(63deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(11) {
+    -moz-transform:  rotate(70deg);
+    -webkit-transform:  rotate(70deg);
+    -o-transform:  rotate(70deg);
+    transform:  rotate(70deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(12) {
+    -moz-transform: rotate(77deg);
+    -webkit-transform: rotate(77deg);
+    -o-transform: rotate(77deg);
+    transform: rotate(77deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(13) {
+    -moz-transform: rotate(84deg);
+    -webkit-transform: rotate(84deg);
+    -o-transform: rotate(84deg);
+    transform: rotate(84deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(14) {
+    -moz-transform: rotate(91deg);
+    -webkit-transform: rotate(91deg);
+    -o-transform: rotate(91deg);
+    transform: rotate(91deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(15) {
+    -moz-transform: rotate(98deg);
+    -webkit-transform: rotate(98deg);
+    -o-transform: rotate(98deg);
+    transform: rotate(98deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(16) {
+    -moz-transform: rotate(105deg);
+    -webkit-transform: rotate(105deg);
+    -o-transform: rotate(105deg);
+    transform: rotate(105deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(17) {
+    -moz-transform: rotate(112deg);
+    -webkit-transform: rotate(112deg);
+    -o-transform: rotate(112deg);
+    transform: rotate(112deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(18) {
+    -moz-transform: rotate(119deg);
+    -webkit-transform: rotate(119deg);
+    -o-transform: rotate(119deg);
+    transform: rotate(119deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(19) {
+    -moz-transform:  rotate(126deg);
+    -webkit-transform:  rotate(126deg);
+    -o-transform:  rotate(126deg);
+    transform:  rotate(126deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(20) {
+    -moz-transform:  rotate(133deg);
+    -webkit-transform:  rotate(133deg);
+    -o-transform:  rotate(133deg);
+    transform:  rotate(133deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(21) {
+    -moz-transform:  rotate(140deg);
+    -webkit-transform:  rotate(140deg);
+    -o-transform:  rotate(140deg);
+    transform:  rotate(140deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(22) {
+    -moz-transform: rotate(147deg);
+    -webkit-transform: rotate(147deg);
+    -o-transform: rotate(147deg);
+    transform: rotate(147deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(23) {
+    -moz-transform: rotate(154deg);
+    -webkit-transform: rotate(154deg);
+    -o-transform: rotate(154deg);
+    transform: rotate(154deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(24) {
+    -moz-transform: rotate(161deg);
+    -webkit-transform: rotate(161deg);
+    -o-transform: rotate(161deg);
+    transform: rotate(161deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(25) {
+    -moz-transform: rotate(168deg);
+    -webkit-transform: rotate(168deg);
+    -o-transform: rotate(168deg);
+    transform: rotate(168deg);
+}
+.playingCards.rotateHand ul.hand-deck li:nth-child(26) {
+    -moz-transform: rotate(175deg);
+    -webkit-transform: rotate(175deg);
+    -o-transform: rotate(175deg);
+    transform: rotate(175deg);
+}
+.playingCards.rotateHand ul.hand-deck li {
+    -moz-transform: rotate(175deg);
+    -webkit-transform: rotate(175deg);
+    -o-transform: rotate(175deg);
+    transform: rotate(175deg);
+}
+
+.playingCards ul.hand-deck li:nth-child(1)  { left: 0;    bottom: 0; }
+.playingCards ul.hand-deck li:nth-child(2)  { left: 2px;  bottom: -1px; }
+.playingCards ul.hand-deck li:nth-child(3)  { left: 4px;  bottom: -2px; }
+.playingCards ul.hand-deck li:nth-child(4)  { left: 6px;  bottom: -3px; }
+.playingCards ul.hand-deck li:nth-child(5)  { left: 8px;  bottom: -4px; }
+.playingCards ul.hand-deck li:nth-child(6)  { left: 10px; bottom: -5px; }
+.playingCards ul.hand-deck li:nth-child(7)  { left: 12px; bottom: -6px; }
+.playingCards ul.hand-deck li:nth-child(8)  { left: 14px; bottom: -7px; }
+.playingCards ul.hand-deck li:nth-child(9)  { left: 16px; bottom: -8px; }
+.playingCards ul.hand-deck li:nth-child(10) { left: 18px; bottom: -9px; }
+.playingCards ul.hand-deck li:nth-child(11) { left: 20px; bottom: -10px; }
+.playingCards ul.hand-deck li:nth-child(12) { left: 22px; bottom: -11px; }
+.playingCards ul.hand-deck li:nth-child(13) { left: 24px; bottom: -12px; }
+.playingCards ul.hand-deck li { left: 24px; bottom: -12px; }
+
+.playingCards ul.deck, .playingCards ul.hand { margin: 0 0 0.5rem 0;}
+
+.playingCards ul.table-card li:nth-child(1)  { left: 0 !important; }
+.playingCards ul.table-card li:nth-child(2)  { left: 1.2em !important; }
+.playingCards ul.table-card li:nth-child(3)  { left: 2.4em !important; }
+
+.playingCards ul.closed-table-card li { left: 0em; }
+.playingCards.rotateHand ul.closed-table-card li:nth-child(1) {
+  -moz-transform: translate(1.9em, .9em) rotate(0) !important;
+  -webkit-transform: translate(1.9em, .9em) rotate(0) !important;
+  -o-transform: translate(1.9em, .9em) rotate(0) !important;
+  transform: translate(1.9em, .9em) rotate(0) !important;
+}
+.playingCards.rotateHand ul.closed-table-card li:nth-child(2) {
+  display: none;
+}
+.playingCards.rotateHand ul.closed-table-card li:nth-child(3) {
+  left: -0.5em;
+  -moz-transform: translate(3.5em, 1.2em) rotate(15deg) !important;
+  -webkit-transform: translate(3.5em, 1.2em) rotate(15deg) !important;
+  -o-transform: translate(3.5em, 1.2em) rotate(15deg) !important;
+  transform: translate(3.5em, 1.2em) rotate(15deg) !important;
+}
+
+.playingCards.rotateHand ul.table-card li:nth-child(1) {
+  -moz-transform: translate(1.9em, .9em) rotate(-18deg) !important;
+  -webkit-transform: translate(1.9em, .9em) rotate(-18deg) !important;
+  -o-transform: translate(1.9em, .9em) rotate(-18deg) !important;
+  transform: translate(1.9em, .9em) rotate(-18deg) !important;
+}
+.playingCards.rotateHand ul.table-card li:nth-child(2) {
+  -moz-transform: translate(1.9em, .9em) rotate(0) !important;
+  -webkit-transform: translate(1.9em, .9em) rotate(0) !important;
+  -o-transform: translate(1.9em, .9em) rotate(0) !important;
+  transform: translate(1.9em, .9em) rotate(0) !important;
+}
+.playingCards.rotateHand ul.table-card li:nth-child(3) {
+  -moz-transform: translate(1.9em, 1.3em) rotate(18deg) !important;
+  -webkit-transform: translate(1.9em, 1.3em) rotate(18deg) !important;
+  -o-transform: translate(1.9em, 1.3em) rotate(18deg) !important;
+  transform: translate(1.9em, 1.3em) rotate(18deg) !important;
+}
+.playingCards .p-card-label {
+  position: absolute;
+  right: -0.2rem;
+  top: 0.5em;
+  width: 3.2rem;
+  padding: 0rem 0.5rem;
+  border: 1px solid #666;
+  border-radius: .3em;
+  -moz-border-radius: .3em;
+  -webkit-border-radius: .3em;
+  -khtml-border-radius: .3em;
+  background-color: #fff;
+  -moz-box-shadow: .2em .2em .5em #333;
+  -webkit-box-shadow: 0.2em 0.2em 0.5em #333;
+  box-shadow: 0.2em 0.2em 0.5em #333;
+}
+.playingCards .p-card-label.back {
+  padding: .2rem 0.5rem;
+  height: 1.5rem;
+  text-indent: -4000px;
+  background-color: #ccc;
+  background-repeat: repeat;
+  background-image: -moz-repeating-linear-gradient(34% 6% 135deg,#335bcc, #333c66, #333c66 50%);
+  background-image: -webkit-gradient(radial, center center, 20, center center, 80, from(#335bcc), color-stop(0.4, #333c66), to(#333c66));
+}
+.playingCards .p-card-label.diams { color: #f00 !important; }
+.playingCards .p-card-label.hearts { color: #f00 !important; }
+.playingCards .p-card-label.spades { color: #000 !important; }
+.playingCards .p-card-label.clubs { color: #000 !important; }

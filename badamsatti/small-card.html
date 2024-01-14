@@ -1,0 +1,68 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>CSS Playing Cards</title>
+    <link rel="stylesheet" type="text/css" href="./cards.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="./bootstrap.min.css" />
+    <script src="./js/vue-2.6.12.js"></script>
+    <style>
+    .card-body {padding: 0 0.5rem;}
+    .playingCards ul.deck, .playingCards ul.hand { margin: 0 0 0.5rem 0;}
+    .card-active {
+      background-color: #b2cde4;
+      border: 1px solid #61aaf3;
+    }
+    .playingCards .p-card-label {
+        padding: .2rem 0.5rem;
+        border: 1px solid #666;
+        border-radius: .3em;
+        -moz-border-radius: .3em;
+        -webkit-border-radius: .3em;
+        -khtml-border-radius: .3em;
+        position: relative;
+        background-color: #fff;
+        -moz-box-shadow: .2em .2em .5em #333;
+        -webkit-box-shadow: 0.2em 0.2em 0.5em #333;
+        box-shadow: 0.2em 0.2em 0.5em #333;
+    }
+
+    .playingCards .p-card-label.back {
+        height: 1.5rem;
+        width: 3rem;
+        text-indent: -4000px;
+        background-color: #ccc;
+        background-repeat: repeat;
+        background-image: -moz-repeating-linear-gradient(34% 6% 135deg,#335bcc, #333c66, #333c66 50%);
+        background-image: -webkit-gradient(radial, center center, 20, center center, 80, from(#335bcc), color-stop(0.4, #333c66), to(#333c66));
+    }
+    .playingCards .p-card-label.diams { color: #f00 !important; }
+    .playingCards .p-card-label.hearts { color: #f00 !important; }
+    .playingCards .p-card-label.spades { color: #000 !important; }
+    .playingCards .p-card-label.clubs { color: #090 !important; }
+    </style>
+</head>
+<body>
+
+<div class="playingCards fourColours rotateHand pt-4" id="transaction-app">
+  <a class="p-card-label hearts"><span class="rank">Q &hearts;</span>
+  </a>
+  <span class="p-card-label clubs"><span class="rank">A &clubs;</span></span>
+  <div class="p-card-label back"></div>
+  <a class="p-card rank-q hearts" href="#">
+      <span class="rank">Q</span>
+      <span class="suit">&hearts;</span>
+  </a>
+  <strong>
+    <span class="p-card rank-a clubs">
+        <span class="rank">A</span>
+        <span class="suit">&clubs;</span>
+    </span>
+</strong>
+</div>
+
+</body>
+
+<script>
+</script>
+</html>
